@@ -25,7 +25,7 @@ user fills in the form with new note
 then submit to server
 end note
 
-browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_notes_spa
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/notes
 server-->browser: 201 status code
 
 note over browser:
