@@ -22,7 +22,7 @@ end note
 
 note over browser:
 user fills in the form with new note
-then submit to server
+then submit to server with data submited as JSON, which declared in Content-Type
 end note
 
 browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/notes
