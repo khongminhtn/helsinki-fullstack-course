@@ -19,3 +19,16 @@ note over browser:
 browser executes the event handler
 that renders notes to display
 end note
+
+note over browser:
+user fills in the form with new note
+then submit to server
+end note
+
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/notes
+server-->browser: 201 status code
+
+note over browser:
+eventhandler adds new note to the list and re-render page
+then send new note to the server
+end note 
