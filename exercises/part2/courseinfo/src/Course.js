@@ -3,11 +3,10 @@ const Header = (props) => {
   }
   
 const Content = ({course}) => {
-    console.log(course.parts)
     return (
       <div>
         {
-          course.parts.map(parts => <div>{parts.name} {parts.exercises}</div>)
+          course.parts.map(parts => <div key={parts.name}>{parts.name} {parts.exercises}</div>)
         }
       </div>
     )
@@ -22,7 +21,6 @@ const SumExercise = ({course}) => {
   }
   
 const Course = (props) => {
-    console.log(props.course)
     return(
       <div>
         {
