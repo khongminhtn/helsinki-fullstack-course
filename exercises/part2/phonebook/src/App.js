@@ -13,7 +13,9 @@ const App = () => {
     // concat metho merges 2 arrays and generate a new compeleted array
     // then replace persons with the newly merged array
     const newNameObject = [{ name: newName }]
-    setPersons(persons.concat(newNameObject)) 
+    persons.find(person => person.name === newName) === undefined
+    ? setPersons(persons.concat(newNameObject))
+    : window.alert(`${newName} is already added to phonebook`)
   }
 
   return(
