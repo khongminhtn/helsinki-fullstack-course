@@ -37,3 +37,71 @@
 - setVariable(!variable) -> reverses the variable
 - variable -> in comparison statement, this is compared to true
     - Simpler than variable === true.
+### Getting Data From Server
+- Tool meant to be used during software development JSON Server.
+    - Global installation: 'npm install -g json-server'
+    - Local installation: 'npx json-server --port 3001 --watch db.json'
+    - json-server default port 3000 clashes with create-react-app default port 3000
+        - so we change json-server port to 3001
+    - JSONView can be used to display json data in browser 
+    - Using json-server during development enables you to use server-side functionality without programming it
+    - typically you use a database to store data.
+- Browser as runtime environment
+    - classic technique is XMLHttpRequest
+        - HTTP request using XHR
+        - No longer recommended
+        - Java executes sychronously
+        - JavaScript engines/runtime environment follow the Asynchronous model
+            - IO operations continues without waiting for a return using non-blocking model
+            - Input/Output
+    - JavaScript engines are single threaded
+        - requires non-blocking model for executing IO operations
+            - Browser would freeze otherwise, to fetch data
+            - to be able to continuously react to user's interactions
+                - no single computation can take too long
+                - no event loops, due to single-threaded engines
+        - Today's browser can run code parallely with help of web-worker
+    - npm
+        - fething data from server
+            - use promise based fetch to pull data from server
+            - using axios allows familiarity with adding npm packages
+            - use axios library to communicate between browser and server
+        - 05/05/2021 nowadays all JS projects are defined using **npm**
+            - clear indicator that project uses npm is *package.json*
+                - dependencies are what the project requires
+                - **should always use npm commands where package.json is located**
+        - There are runtime dependencies and development dependencies
+    - Axios and promises
+        - react app and json-server run on 2 different ports, which requires 2 terminals
+        - to make index.js notice changes instantly, add .env file and put FAST_REFRESH=false in the file.
+        - "A Promise is an object representing the eventual completion or failure of an asynchronous operation"
+            - A promise can be in 3 states:
+                - *pending*
+                - *fulfilled*
+                - *rejected*
+        - To access results of fulfilled promise object 
+            - Use *promise.then*
+                - contains all information about the request
+                    - header, data, config, request, status ...
+            - we can chain promise methods such as axios.get().then()
+                - we can also give each method its own line for readability
+            - data returned is a long string
+                - axios can parse the data into an array:
+                    - header: application/json; charset=utf8
+        - fetching in App component is less problematic than in index.js
+            - however we have to use **Effect-Hooks** to use **axios.get**
+    - Effect-hooks
+        - React 16.8.0 introduces state hooks and effect hooks
+        - Effect Hooks: "The Effect Hook lets you perform side effects in function components. Data fetching, setting up a subscription, and manually changing the DOM in React components are all examples of side effects.
+        - Effect Hooks runs after the component is rendered
+        - REMEMBER a call to a state-updating function triggers re-rendering of the component
+        - By default effect is always run after a render.
+            - the second parameter of useEffect() defines how often it runs; after every render or once
+        - When adding data to React, it does not add to the server, we need to update it to the server
+    - Development runtime environment
+        - index.js => react dev-server => React App (Browser)
+        - database => json => React App (Browser)
+        - dev-server collects and stitches all javascript files from index.js into 1 file which can be understood by the browser (Web Pack)
+        - database-server collects data from database and parse it to browser as JSON formatted file 
+        - So far this is all done in development-environment/ localhost
+        
