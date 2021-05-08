@@ -66,7 +66,6 @@ const App = () => {
       <DisplayCountries 
         countries={countries}
         searchInput={searchInput}/>
-
     </div>
   )
 }
