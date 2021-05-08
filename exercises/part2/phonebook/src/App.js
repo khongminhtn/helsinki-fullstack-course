@@ -39,6 +39,9 @@ const App = () => {
   const [ newNum, setNewNum ] = useState('')
   const [ filteredNames, setFilteredNames ] = useState('')
 
+  // useEffect takes 2 parameters
+  //    one for Promise HTTP request
+  //    the other to define how often it is run
   useEffect(() => {
     console.log('Fetching data...')
     axios
