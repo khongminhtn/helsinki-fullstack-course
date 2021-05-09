@@ -12,6 +12,33 @@ const Search = (props) => {
   )
 }
 
+const CountryDetail = ({country}) => {
+  const [showCountry, setShowCountry] = useState(false)
+  const toggleShowCountry = () => setShowCountry(!showCountry)
+  return (
+    <div key={country.namw}>
+      <>{country.name}</>
+      <button onClick={toggleShowCountry}>show</button>
+      {
+        showCountry
+        ? <>
+            <h1>{country.name}</h1>
+            <div>Capital: {country.capital}</div>
+            <div>Population: {country.population}</div>
+            <h3>languages</h3>
+            <ul>
+              {
+                country.languages.map(language => <li key={language.name}>{language.name}</li>)
+              }
+            </ul>
+            <img src={country.flag} width='150' height='100'/>
+          </>
+        : null
+      }
+    </div>
+  )
+}
+
 const DisplayCountries = (props) => {
   // Displays filtered countries
   const countriesToDisplay = props.countries.filter(country => country.name.toLowerCase().includes(props.searchInput.toLowerCase()))
@@ -30,12 +57,12 @@ const DisplayCountries = (props) => {
             <h3>languages</h3>
             <ul>
               {
-                countriesToDisplay[0].languages.map(language => <li>{language.name}</li>)
+                countriesToDisplay[0].languages.map(language => <li key={language.name}>{language.name}</li>)
               }
             </ul>
             <img src={countriesToDisplay[0].flag} width='150' height='100'/>
           </>
-        : countriesToDisplay.map(country => <div key={country.name}>{country.name}</div>)
+        : countriesToDisplay.map(country => <CountryDetail country={country}/>)
       }
     </div>
   )
