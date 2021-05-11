@@ -43,7 +43,7 @@ const DisplayCountries = (props) => {
   // Filtered Countries
   const countriesToDisplay = props.countriesToDisplay
 
-  // Weather request params
+  // run useEffect to request for weather each time countries is filtered
   const [weather, setWeather] = useState()
   useEffect(() => {
     const endPoint = 'https://api.weatherstack.com/current'
