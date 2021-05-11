@@ -91,13 +91,13 @@
         - fetching in App component is less problematic than in index.js
             - however we have to use **Effect-Hooks** to use **axios.get**
     - Effect-hooks
-        - React 16.8.0 introduces state hooks and effect hooks
         - Effect Hooks: "The Effect Hook lets you perform side effects in function components. Data fetching, setting up a subscription, and manually changing the DOM in React components are all examples of side effects.
         - Effect Hooks runs after the component is rendered
         - REMEMBER a call to a state-updating function triggers re-rendering of the component
         - By default effect is always run after a render.
             - the second parameter of useEffect() defines how often it runs; after every render or once
         - When adding data to React, it does not add to the server, we need to update it to the server
+        - Effect hooks that does not require a clean up are usually hooks that run once and can be forgotten
     - Development runtime environment
         - index.js => react dev-server => React App (Browser)
         - database => json => React App (Browser)
