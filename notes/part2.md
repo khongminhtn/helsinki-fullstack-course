@@ -61,7 +61,13 @@
                 - no single computation can take too long
                 - no event loops, due to single-threaded engines
         - Today's browser can run code parallely with help of web-worker
-    - npm
+        - Event Loops
+            - Asychronous callbacks/Web Api functions takes another function as params
+            - These callback functions are passed to the Web API
+            - Web Api then passes callback to the Callback Queue
+            - Callback queue then wait for the Call stack to finish executing the JavaScript codes.
+            - Then all the callback functions in the Queue will start execution. 
+    - npm 
         - fething data from server
             - use promise based fetch to pull data from server
             - using axios allows familiarity with adding npm packages
