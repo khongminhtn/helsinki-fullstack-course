@@ -15,7 +15,7 @@
 - filter()
     - Takes a function and returns a new array of filtered items
 - concat()
-    - Merges 2 arrays and returns a new array.
+    - Merges 2 arrays/objects and returns a new array/object.
 - Anti-pattern: Array indexes as Keys
     - The second parameter in Map will be Id
     - However, it is not recommended
@@ -61,7 +61,7 @@
                 - no single computation can take too long
                 - no event loops, due to single-threaded engines
         - Today's browser can run code parallely with help of web-worker
-        - Event Loops
+        - Event Loops (Asychronous programming.)
             - Asychronous callbacks/Web Api functions takes another function as params
             - These callback functions are passed to the Web API
             - Web Api then passes callback to the Callback Queue
@@ -110,4 +110,22 @@
         - dev-server collects and stitches all javascript files from index.js into 1 file which can be understood by the browser (Web Pack)
         - database-server collects data from database and parse it to browser as JSON formatted file 
         - So far this is all done in development-environment/ localhost
-        
+    ### Altering data in server
+    - REST (Representational state transfer)
+        - Refers to individual objects as resources
+        - Every resources has a unique address, its URL
+        - Resources are fetched from server with HTTP GET requests
+        - Creating a new resource is done by HTTP POST requests
+        - json-server requires all resources to be sent in JSON format
+    - Sending Data to the server
+        - API is used to send data in json format to database/backend
+            - Post request or Get request is processed by back end
+            - Data being carried or requested by HTTP request
+                - is queried using SQL programming
+        - It is useful to inspect HTTP requests in Network tab of Chrome developer tool
+            - Used to check if data being sent or requested is correct
+    
+# Tools Used
+1. Json-Server
+2. Axios
+3. Postman
