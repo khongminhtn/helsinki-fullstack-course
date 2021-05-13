@@ -114,12 +114,12 @@
     - REST (Representational state transfer)
         - Refers to individual objects as resources
         - Every resources has a unique address, its URL
-        - Resources are fetched from server with HTTP GET requests
-        - Creating a new resource is done by HTTP POST requests
+        - **HTTP GET => Retrieves resources**
+        - **HTTP POST => Creates resources**
+        - **HTTP PUT => Replaces sources**
+        - **HTTP PATCH => Changes resource property**
+        - **HTTP DELETE => Deletes resources**
         - json-server requires all resources to be sent in JSON format
-        - Replacing an entire resource is done with HTTP PUT request
-        - changing some of the resource's property is done with HTTP PATCH requests
-        - Deleting a resource is done with HTTP DELETE request
     - Sending Data to the server
         - API is used to send data in json format to database/backend
             - Post request or Get request is processed by back end
