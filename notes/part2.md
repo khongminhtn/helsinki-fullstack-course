@@ -117,6 +117,8 @@
         - Resources are fetched from server with HTTP GET requests
         - Creating a new resource is done by HTTP POST requests
         - json-server requires all resources to be sent in JSON format
+        - Replacing an entire resource is done with HTTP PUT request
+        - changing some of the resource's property is done with HTTP PATCH requests
     - Sending Data to the server
         - API is used to send data in json format to database/backend
             - Post request or Get request is processed by back end
@@ -124,6 +126,19 @@
                 - is queried using SQL programming
         - It is useful to inspect HTTP requests in Network tab of Chrome developer tool
             - Used to check if data being sent or requested is correct
+    - Changin the importance of notes
+        - By adding unique id key to a react component, that component becomes unique for easier selection and modification that specific component. 
+        - shallow copy, values of old is same as new object
+        - Changes to data should update backend database first then use response.data to change the data.
+    - Extracting communication with the backend into a seperate module
+        - **Promises are central to modern JavaScript development and it is highly recommended to invest a reasonable amount of time into understanding them.**
+    - Cleaner Syntax for defining object literals
+        - if key and value of an object are the same, it can be written in singles
+            - { key: key, name: name, id: id}
+            - can be written as { key, name, id }
+    - Promises and Errors
+        - promise.then is called only when promise is fulfilled
+        - promise.catch is used to catch errors when promise is rejected.
     
 # Tools Used
 1. Json-Server
