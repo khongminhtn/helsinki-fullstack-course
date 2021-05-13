@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import personService from './services/persons'
 
 const Filter = (props) => {
   return(
@@ -26,8 +26,8 @@ const Persons = (props) => {
     <ul>
       { 
         props.filteredNames === '' 
-        ? props.persons.map(person => <li key={person.name}>{person.name} {person.number}</li>)
-        : props.namesToDisplay.map(person => <li key={person.name}>{person.name}</li>)
+        ? props.persons.map(person => <li key={person.name}>{person.name} {person.number} <button onClick={() => props.deletePerson(person.id, person.name)}>delete</button></li>)
+        : props.namesToDisplay.map(person => <li key={person.name}>{person.name}<button onClick={() => props.deletePerson(person.id, person.name)}>delete</button></li>)
       }
     </ul>
   )
@@ -43,31 +43,49 @@ const App = () => {
   //    one for Promise HTTP request
   //    the other to define how often it is run
   useEffect(() => {
-    console.log('Fetching data...')
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        console.log('Promise fulfilled')
-        setPersons(response.data)
-      })
+    personService
+      .getAll()
+      .then(data => setPersons(data))
   }, [])
 
   const updateNewName = (e) => setNewName(e.target.value)
   const updateNewNum = (e) => setNewNum(e.target.value)
+  const filterNames = (e) => setFilteredNames(e.target.value.toLowerCase())
+  const namesToDisplay = persons.filter(person => person.name.toLowerCase().includes(filteredNames))
+
+  // Request to add a person to database
   const addPerson = (e) => {
     e.preventDefault()
     // concat method merges 2 arrays and generate a new compeleted array
     // then replace persons with the newly merged array
-    const newNameObject = [{ 
+    const newNameObject = { 
       name: newName,
-      number: newNum 
-    }]
-    persons.find(person => person.name === newName) === undefined
-    ? setPersons(persons.concat(newNameObject))
-    : window.alert(`${newName} is already added to phonebook`)
+      number: newNum,
+    }
+    const existingPerson = persons.find(person => person.name === newName)
+    existingPerson === undefined
+    ? personService
+        .create(newNameObject)
+        .then(data => {
+          setPersons(persons.concat(data))
+        })
+    : personService
+        .update(existingPerson.id, newNameObject)
+        .then(data => {
+          console.log(existingPerson.id)
+          window.confirm(`${newNameObject.name} is already added to phonebook, replace the old number with a new one ?`)
+          setPersons(persons.map(person => person.id !== existingPerson.id ? person : data))
+        })
   }
-  const filterNames = (e) => setFilteredNames(e.target.value.toLowerCase())
-  const namesToDisplay = persons.filter(person => person.name.toLowerCase().includes(filteredNames))
+  // Request to delete a person in database
+  const deletePerson = (id, name) => {
+    personService
+      .deleteObject(id)
+      .then(() => {
+        window.confirm(`Delete ${name}`)
+        setPersons(persons.filter(person => person.id !== id))
+      })
+  }
 
   return(
     <div>
@@ -82,7 +100,8 @@ const App = () => {
       <Persons 
         persons={persons}
         namesToDisplay={namesToDisplay}
-        filteredNames={filteredNames}/>
+        filteredNames={filteredNames}
+        deletePerson={deletePerson}/>
     </div>
   )
 }
