@@ -2,7 +2,7 @@
 > Whats the difference between an experienced Javascript programmer and a rookie ? The experienced one uses console.log 10-100 times more.
 - logs more for debugging and do not concatenate
 - Javascript Arrays
-    - array methods such as *find*, *filter* and *map* will be used all the time
+    - array methods such as *find*, *filter*, *concat* and *map* will be used all the time
         - functional programming
 - Rendering collections
     - Rendering an array using list.map() function
