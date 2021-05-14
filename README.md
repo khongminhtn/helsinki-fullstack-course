@@ -1,4 +1,4 @@
-# Generals Information  
+# General Information  
 >This course is an introduction to modern web development with JavaScript. The main focus is on single page applications implemented with React and supporting them with RESTful and GraphQL web services implemented with Node.js. Course has also parts on TypeScript, React Native and Continuous integration.  
  
 ### Skills to be obtained:
@@ -11,6 +11,20 @@
  
 ### Course Structure  
 Build one large projects through multiple small exercises. There are 11 parts and each part is required to have a thorough understand before moving to the next part of the course. 
- 
+
+### Tools being taught
+1. ReactJS
+2. Node.js
+3. Axios
+4. Json-server
+5. API HTTP REQUESTS
+    - HTTP GET
+    - HTTP POST
+    - HTTP PUT
+    - HTTP PATCH
+    - HTTP DELETE
+6. Express.js
+7. MongoDB
+8. Postman
 ### More Information  
 https://fullstackopen.com/en/about
