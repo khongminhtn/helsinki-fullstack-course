@@ -1,6 +1,21 @@
 import React, { useState, useEffect } from 'react'
 import personService from './services/persons'
 
+const ErrorMessage = ({message}) => {
+  const errorStyle = {
+    color: message.includes('Added') ? 'green' : 'red',
+    fontSize: 16,
+    borderStyle: 'solid',
+    borderRadius: 5,
+    padding: 10,
+  }
+  return(
+    <div style={message.length > 0 ? errorStyle : null}>
+      {message}
+    </div>
+  )
+}
+
 const Filter = (props) => {
   return(
     <div>
@@ -38,6 +53,7 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNum, setNewNum ] = useState('')
   const [ filteredNames, setFilteredNames ] = useState('')
+  const [ errorMessage, setErrorMessage ] = useState('')
 
   // useEffect takes 2 parameters
   //    one for Promise HTTP request
@@ -58,23 +74,35 @@ const App = () => {
     e.preventDefault()
     // concat method merges 2 arrays and generate a new compeleted array
     // then replace persons with the newly merged array
-    const newNameObject = { 
+    const newPerson = { 
       name: newName,
       number: newNum,
     }
     const existingPerson = persons.find(person => person.name === newName)
     existingPerson === undefined
     ? personService
-        .create(newNameObject)
+        .create(newPerson)
         .then(data => {
+          setErrorMessage(`Added ${newPerson.name}`)
+          setTimeout(() => {
+            setErrorMessage('')
+          }, 5000)
           setPersons(persons.concat(data))
         })
     : personService
-        .update(existingPerson.id, newNameObject)
+        .update(existingPerson.id, newPerson)
         .then(data => {
-          console.log(existingPerson.id)
-          window.confirm(`${newNameObject.name} is already added to phonebook, replace the old number with a new one ?`)
+          window.confirm(`${newPerson.name} is already added to phonebook, replace the old number with a new one ?`)
+          setErrorMessage(`Number is replaced for ${existingPerson.name}`)
+          setTimeout(() => {
+            setErrorMessage('')
+          }, 5000)
           setPersons(persons.map(person => person.id !== existingPerson.id ? person : data))
+        }).catch(() => {
+          setErrorMessage(`Information of ${newPerson.name} has already been removed`)
+          setTimeout(() => {
+            setErrorMessage('')
+          }, 5000)
         })
   }
   // Request to delete a person in database
@@ -83,13 +111,23 @@ const App = () => {
       .deleteObject(id)
       .then(() => {
         window.confirm(`Delete ${name}`)
+        setErrorMessage(`Deleted ${name}`)
+        setTimeout(() => {
+          setErrorMessage('')
+        }, 5000)
         setPersons(persons.filter(person => person.id !== id))
+      }).catch(() => {
+        setErrorMessage(`Information of ${name} has already been removed`)
+        setTimeout(() => {
+          setErrorMessage('')
+        }, 5000)
       })
   }
 
   return(
     <div>
       <h2>Phonebook</h2>
+      <ErrorMessage message={errorMessage}/>
       <Filter filterNames={filterNames}/>
       <h2>add a new</h2>
       <PersonForm
