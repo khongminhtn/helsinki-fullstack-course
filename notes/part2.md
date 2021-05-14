@@ -140,7 +140,21 @@
     - Promises and Errors
         - promise.then is called only when promise is fulfilled
         - promise.catch is used to catch errors when promise is rejected.
-    
+    ### Adding styles to React App
+    - CSS rules comprise of a selector and declaration
+        - Selector can be the tags or id or class
+        - In react class is written as className
+    - Inline Styles
+        - CSS can be defined directly in JavaScript
+        - CSS syntax is different in JavaScript than in CSS
+        - It is defined as an object, with keys and values
+        - numeric pixel values can be defined as integers
+        - CSS hyphenated properties are written in camelCase
+        - CSS values defined in words is written as strings
+        - **Inline style comes with limitations such as pseudo-clases and many others**
+    - Philosophy of React goes completely against the traditional web developement where CSS, HTML and JS are written in seperate files
+    - **However, this is not scalable so React entity (components) defines the structure of the website and each entity/component comprise of content (HTML), functionality (JS) and style (CSS) all in one single entity.** 
+
 # Tools Used
 1. Json-Server
 2. Axios
