@@ -12,20 +12,22 @@
 ### Course Structure  
 Build one large projects through multiple small exercises. There are 11 parts and each part is required to have a thorough understand before moving to the next part of the course. 
 
-### Tools being taught
+### Topics Being Taught
 1. ReactJS
 2. Node.js
 3. Axios
 4. Json-server
-5. API HTTP REQUESTS
+5. HTTP REQUESTS
     - HTTP GET
     - HTTP POST
     - HTTP PUT
     - HTTP PATCH
     - HTTP DELETE
 6. Express.js
-7. MongoDB
-8. Postman
+7. MongoDB 
+8. Postman (dev)
+9. VS Code REST Client
+10. nodemon (dev)
 
 ### More Information  
 https://fullstackopen.com/en/about
