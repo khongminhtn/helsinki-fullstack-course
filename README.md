@@ -28,6 +28,7 @@ Build one large projects through multiple small exercises. There are 11 parts an
 8. Postman (dev)
 9. VS Code REST Client
 10. nodemon (dev)
+11. morgan (dev)
 
 ### More Information  
 https://fullstackopen.com/en/about

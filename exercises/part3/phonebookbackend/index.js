@@ -1,7 +1,13 @@
 const { response } = require('express')
 const express = require('express')
+const morgan = require('morgan')
+
 const app = express()
 app.use(express.json())
+app.use(morgan((tokens, req, res) => {
+  const content = JSON.stringify(req.body)
+  return `${tokens.method(req, res)} ${tokens.url(req, res)} ${tokens['response-time'](req, res)} ms ${content}`
+}))
 
 let persons = [
   {
@@ -33,7 +39,7 @@ app.get('/api/persons', (req, res) => {
 })
 
 app.get('/info', (req, res) => {
-  const display = `<div>Phonebook has info for ${persons.length} people</div><br/><div>${Date()}</div>`
+  const display = `Phonebook has info for ${persons.length} people</div><br/><div>${Date()}`
   return res.status(200).send(display)
 })
 
@@ -51,13 +57,11 @@ app.get('/api/persons/:id', (req, res) => {
 app.delete('/api/persons/:id', (req, res) => {
   const id = Number(req.params.id) 
   persons = persons.filter(person => person.id !== id)
-  console.log(persons)
   res.status(204).end()
 })
 
 app.post('/api/persons', (req, res) => {
   const newPerson = req.body
-  console.log(newPerson)
   if (!newPerson.name) {
     return res.status(400).send('Missing name')
   } else if (!newPerson.number) {
@@ -67,11 +71,10 @@ app.post('/api/persons', (req, res) => {
   } else { 
     newPerson.id = Math.floor(Math.random() * 1000)
     persons = persons.concat(newPerson)
-    console.log(persons)
     res.status(200).json(newPerson)
   }
-
 })
+
 // Once event handlers are defined, we create a listener that listens for the Client requests
 // that are being sent to the port we defined.
 const PORT = 3001
