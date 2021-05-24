@@ -18,7 +18,60 @@
     - Different local servers require different ports to run on
     - import http from 'http'  <== ES6 imports requires exports
         - imports Node's built in web server module
-    -
+        - Node's uses CommonJS instead as it does not support ES6 yet.
+        - CommonJS function almost exactly like ES6
+        - http.createServer() 
+            - create a new web server
+            - an event handler is registered to the server
+            - event handler is called everytime a request is made to the server address
+    - Primary focus for our backend is to provide data in JSON format to front end
+    - Much like json-server
+- Express
+    - Implementing server code with just Node's built in web server is cumbersome when application grows in size
+    - Express offer a more pleasing interface to work with backend
+    - Express is a dependency that also has other dependencies, which are called transitive dependencies
+    - Express is a function that is used to create express application
+    - express().get()
+        - One of express's event handler
+        - Event handler function takes 2 params
+            1. request param, contains info of HTTP request 
+            2. response param, defines how request is responded
+                - response.send() automatically sets the Content-Type header to be HTML
+                - response.json(data) automatically sets the Content-Type header to be JSON
+                    - With Node alone, you have to stringify a JSON object, however with express, this happens automatically
+    - Highly recommended to use node-repl to test how commands works
+- nodemon
+    - Changes made to the backend application, requires a restart to see changes
+    - nodemon will watch the files in the directory in which nodemon was started, and if any files change, nodemon will automatically restart your node application.
+- REST
+    - REPRESENSTATIONAL STATE TRANSFER
+    - Allows building scalable applications
+    - RESTful thinking
+        - Resources
+            - contains URL pointing to that resource collection
+                - each resource has a unique id
+    - REST API Designers:
+        - REST API should not depend on any communcation protocol
+        - REST API should not change communication protocol
+        - Effort should be defining media type representing resource
+        - Must not define fixed names or hierarchies
+        - Should never have client important "typed" resources
+        - Should be entered with no prior knowledge beyond initial URI
+- Postman
+    - Used for API testing
+    - Or instead we can use VS Code REST Client to test api
+        - Install plugin then create a .rest file and place HTTP request inside -> click on send requests and results will be displayed
+        - Multiple requests can be done with ### seperator
+- Receiving data
+    - making a HTTP POST request to the address
+        - Send all the information in the request body in JSON format
+        - Easier access to data by activate express's json-parser
+            - express().use(express.json())   => activates json-parser
+            - Transform into a JS object
+            - Server will not parse the data correctly if Content-Type is defined incorrectly
+        - remember to return a response to end the function
+        - generate time stamp on server rather than browser, browser might not set its clock correctly
+
 ### Deploying App to internet
 ### Saving Data to MongoDB
 ### Validation and ESLint
