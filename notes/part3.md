@@ -71,6 +71,26 @@
             - Server will not parse the data correctly if Content-Type is defined incorrectly
         - remember to return a response to end the function
         - generate time stamp on server rather than browser, browser might not set its clock correctly
+- About HTTP request types
+    - HTTP Standard talks about 2 properties **safety** and **idempotence**:
+        - Safe
+            - **GET** and **HEAD** methods **SHOULD NOT** have the significance of taking action other than retrieval. Considered "safe".
+            - Safety means no side effects caused to the server
+            - Side effects means that no changes to database upon requests
+            - Return must only return data that already exists in the server
+            - HEAD returns nothing but status code and response headers
+        - Indempotence:
+            - All HTTP request except POST should be indempotent.
+            - This means that any side effects should result the same
+                - GET, HEAD, PUT, DELETE
+        - POST is the only type that is neither safe nor idempotent
+            - 
+- Middleware
+    - json-parser is so called middleware
+    - functions that is used for handling request and response objects
+    - Several middleware can be used at the same time
+        - executed 1 by 1 in order
+        - in Express it is executed with app.use(middleware())
 
 ### Deploying App to internet
 ### Saving Data to MongoDB
