@@ -93,5 +93,39 @@
         - in Express it is executed with app.use(middleware())
 
 ### Deploying App to internet
+- CORS
+    - Cross-origin resource sharing
+    - Mechanism allowing 2 domains to share resources
+        - Images
+        - Style sheets
+        - Fonts
+        - Scripts
+        - iFrames
+        - Videos
+    - Certain cross-domain requests, mostly Ajax request are forbidden
+        - by default because of the same origin security policy
+        - use Node's **cors** middleware to allow requests from other domains
+    - Current app setup
+        - React index.js => PORT: 3000 => Browser
+        - Node index.js => PORT: 3001 => Browser
+        - 2 seperate servers, 1 serve frontend and 1 serve backend
+- Application to the internet
+    - Heroku (backend server)
+        - add Procfile to tell heroku how to start
+            - web: npm start
+        - change port to use environment variable if undefined then use 3001
+        - create a git respository and push it to heroku
+    - Front end production
+        - By default react is created and run in dev mode
+            - displays errors
+        - for production, react app need to be optimized
+            - if app created with create-react-app
+                - *npm run build* can be used to optimize
+                    - this will create a minified version of the application
+                    - **a single *index.html* file with all javascript code from all of app's dependencies minified into this single file**
+    - Serving static files from the backend
+        - copy the build directory to root of backend and configure the back end to show frontend's main page
+        - to make express show static content we need middlewares called *static*
+
 ### Saving Data to MongoDB
 ### Validation and ESLint
