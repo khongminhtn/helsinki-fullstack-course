@@ -30,7 +30,7 @@ Build one large projects through multiple small exercises. There are 11 parts an
 10. nodemon (dev)
 11. morgan (dev)
 12. cors (cross-origin middleware)
-13. static (middleware to display static)
+13. static (express's middleware to display static)
 
 ### More Information  
 https://fullstackopen.com/en/about
