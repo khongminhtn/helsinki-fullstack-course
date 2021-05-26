@@ -2,6 +2,7 @@ const { response } = require('express')
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
+const static = require('static')
 
 const app = express()
 // Middlewars
@@ -14,6 +15,8 @@ app.use(morgan((tokens, req, res) => {
 })) 
 // Allows the backend cross-origin resource sharing
 app.use(cors())
+// Display static files (react build files)
+app.use(express.static('build'))
 
 let persons = [
   {

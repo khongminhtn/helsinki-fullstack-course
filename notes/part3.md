@@ -140,7 +140,7 @@
         - changing default proxy can easily be done in package.json
             - "proxy": "http://localhost:**PORT**"
         - only has effect during development (npm start)
-        - This allows frontend to fetch data from the backend port during development
+        - If base url is not availble proxy is used to set a default baseurl for requests
     - A typical problem with deploying app to the internet is missing dependency in package.json and ports not configured with environment variable
 
 
