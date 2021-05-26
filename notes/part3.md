@@ -126,6 +126,23 @@
     - Serving static files from the backend
         - copy the build directory to root of backend and configure the back end to show frontend's main page
         - to make express show static content we need middlewares called *static*
+        - when HTTP Get request happen, static first checks build directory for file corresponding with request's address
+        - Negative aspect of this way of deploying front end is:
+            - Complicated
+            - Make deployment pipeline more difficult
+                - Deployment pipeline:  
+                    - Moves the code of the developer through tests and quality checks for production
+        - There are many ways of deploying the front end.
+    - Streamlining deploying of the frontend
+        - commandline scripting to avoid manual npm typing
+        - windows runs cmd.exe as shell and not bash
+    - Proxy
+        - changing default proxy can easily be done in package.json
+            - "proxy": "http://localhost:**PORT**"
+        - only has effect during development (npm start)
+        - This allows frontend to fetch data from the backend port during development
+    - A typical problem with deploying app to the internet is missing dependency in package.json and ports not configured with environment variable
+
 
 ### Saving Data to MongoDB
 ### Validation and ESLint

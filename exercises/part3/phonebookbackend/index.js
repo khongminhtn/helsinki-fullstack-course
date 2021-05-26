@@ -1,13 +1,19 @@
 const { response } = require('express')
 const express = require('express')
 const morgan = require('morgan')
+const cors = require('cors')
 
 const app = express()
+// Middlewars
+// Express's built in json object converting
 app.use(express.json())
+// Morgan loggin tool
 app.use(morgan((tokens, req, res) => {
   const content = JSON.stringify(req.body)
   return `${tokens.method(req, res)} ${tokens.url(req, res)} ${tokens['response-time'](req, res)} ms ${content}`
-}))
+})) 
+// Allows the backend cross-origin resource sharing
+app.use(cors())
 
 let persons = [
   {
@@ -77,7 +83,7 @@ app.post('/api/persons', (req, res) => {
 
 // Once event handlers are defined, we create a listener that listens for the Client requests
 // that are being sent to the port we defined.
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT)
 console.log(`Server running on port ${PORT}`)
 
