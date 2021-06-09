@@ -146,5 +146,57 @@
 
 ### Saving Data to MongoDB
 - Debugging Node Applications
+    - Debugging Node Application is more difficult than JavaScript
+    - Printing to console is tried and true method
+    - Visual Studio Debugger or Chrome Dev Tool
+    - Question everything
+        - Eliminate all possibilities 1 by 1
+        - Console Loggings, Postman and debuggers will help
+        - Do not continue to write code when there are bugs
+- MongoDB
+    - Store data indefinitely
+    - instead of relational database, MongoDB is document database
+    - Document database is categorized under NoSQL
+    - Databases and Collections
+        - Mongo stores data records as BSON document
+            - records gathered together as collections
+        - Mongo holds one or more collection of docs
+    - Collection
+        - BSON is a binary respresentation of JSON docs
+        - { field: value, field1: value2, ... fieldN: valueN }
+        - value can be of any data types
+        - field names are string with restrictions
+            - _id is reserved as primary key (immutable)
+            - cannot contain null character
+            - Top-level field names cannot have $
+        - Mongo uses dot notation to access elements of an array & field's value using field's name
+        - Maximum size of a BSON document is 16 megabytes
+            - stops excessive use of RAM or bandwidth
+            - to exceed size use GridFS API
+        - _id always the first field in the document
+            - primary key
+            - Can contain BSON data type other than array
+        - Renaming fields may result reordering of fields
+    - Mongoose
+        - Higher level API
+        - Simpler than official MongoDB Node.js driver library
+        - Described as ODM object document mapper
+        - Saving Javascript as Mongo Document is easier
+        - Schemas defines the structure of the document
+            - Given fields and types of data of that field
+            - Tells mongoose how to store data
+            - Mongoose refers to the collections as plural
+            - Whereas schema refers to the name of the model singularly
+    - Document data base is schemaless
+        - Does not care about the structure
+    - Creating and saving Objects
+        - Models
+            - Fancy constructors compliled from schema
+            - Responsible for creating and reading documents
+            - Schema defines the structure such as field and values
+            - Models takes the schema and compiles it with a given name
+            - When creating and saving record to documents, end the mongoose connection otherwise execution will never be finished
+            - In mongoose, model is an object that has function dealing with the database
+
 
 ### Validation and ESLint
