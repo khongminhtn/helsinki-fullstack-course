@@ -25,6 +25,7 @@ Build one large projects through multiple small exercises. There are 11 parts an
     - HTTP DELETE
 6. Express.js
 7. MongoDB 
+8. MongoDB Atlas
 8. Postman (dev)
 9. VS Code REST Client
 10. nodemon (dev)
