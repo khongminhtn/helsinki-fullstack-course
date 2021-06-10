@@ -195,8 +195,23 @@
             - Responsible for creating and reading documents
             - Schema defines the structure such as field and values
             - Models takes the schema and compiles it with a given name
-            - When creating and saving record to documents, end the mongoose connection otherwise execution will never be finished
-            - In mongoose, model is an object that has function dealing with the database
-
-
+            - When creating and saving documents, end the mongoose connection otherwise execution will never be finished
+            - In mongoose, model is a class object that has operation on the document/attributes/data
+            - Model is instantiated each time we want to add new data to the database.
+    - Backend connected to a database
+        - When retreiving data from database to frontend, it assumes that every object has an _id field and  __v field and this can be problematic during testing phase.
+            - Solve this by modifying toJSON method of the schema so that _id is now id and __v is now v
+    - Database configuration to its own module
+        - defining Node modules is different compared to ES6 
+        - public interface of module is defined by setting a value to module.exports variable
+        - variables inside the module are private and wont be visible to users of the module.
+        - use dotenv to create env variables
+            - created in .env file and 
+            - Should be gitignored right away
+            - require('dotenv').config() will give access to env
+            - make sure that dotenv is imported at the top so all modules can have access to the variable
+    - Verifying frontend and backend integration
+        - Test backend first using Postman or VS Code REST Client before testing with frontend
+        - It is also good idea to implement one functionality at a time, then test it making sure that it works, then move on to the next functionality
+        - 
 ### Validation and ESLint
