@@ -1,11 +1,15 @@
+require('dotenv').config()
 const { response } = require('express')
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 const static = require('static')
+const Person = require('./models/person')
+const mongoose = require('mongoose')
 
+
+// ==== Middlewares ====
 const app = express()
-// Middlewars
 // Express's built in json object converting
 app.use(express.json())
 // Morgan loggin tool
@@ -18,49 +22,35 @@ app.use(cors())
 // Display static files (react build files)
 app.use(express.static('build'))
 
-let persons = [
-  {
-    id: 1,
-    name: 'Arto Hellas',
-    number: '040-123456'
-  },
-  {
-    id: 2,
-    name: 'Ada Lovelace',
-    number: '938-209-3820938'
-  },
-  {
-    id: 3,
-    name: 'Dan Abramov',
-    number: '12-43-234345'
-  },
-  {
-    id: 4,
-    name: 'Mary Poppendick',
-    number: '39-23-6423122'
-  },
-]
 
+// ==== Responding to API Requests ====
 // We create event handlers to repond to GET, POST, DELETE, PUT, PATCH requests 
 // We then return a response to the client
 app.get('/api/persons', (req, res) => {
-  return res.status(200).json(persons)
+  Person
+    .find({})
+    .then(result => res.status(200).json(result))
 })
 
 app.get('/info', (req, res) => {
-  const display = `Phonebook has info for ${persons.length} people</div><br/><div>${Date()}`
-  return res.status(200).send(display)
+  Person
+    .find({})
+    .then(result => {
+      const display = `Phonebook has info for ${result.length} people</div><br/><div>${Date()}`
+      return res.status(200).send(display)
+    })
+
 })
 
 // :id is a param and can be accessed in the request object
 app.get('/api/persons/:id', (req, res) => {
   const id = req.params.id 
-  const person = persons.find(person => person.id === Number(id))
-  if (person) {
-    return res.status(200).json(person)
-  } else {
-    return res.status(400).send('Person does not exist')
-  }
+  Person
+    .findById(id)
+    .then(person => {
+      console.log(person)
+      res.status(200).json(person)
+    })
 })
 
 app.delete('/api/persons/:id', (req, res) => {
@@ -75,11 +65,13 @@ app.post('/api/persons', (req, res) => {
     return res.status(400).send('Missing name')
   } else if (!newPerson.number) {
     return res.status(400).send('Missing number')
-  } else if (persons.find(person => person.name === newPerson.name)) {
-    return res.status(400).send('Person already exist')
   } else { 
-    newPerson.id = Math.floor(Math.random() * 1000)
-    persons = persons.concat(newPerson)
+    new Person({name: newPerson.name, number: newPerson.number})
+      .save()
+      .then(result => {
+        console.log(`${newPerson.name} and ${newPerson.number} has been added`)
+        
+      })
     res.status(200).json(newPerson)
   }
 })

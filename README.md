@@ -26,12 +26,14 @@ Build one large projects through multiple small exercises. There are 11 parts an
 6. Express.js
 7. MongoDB 
 8. MongoDB Atlas
+9. Mongoose API (ODM object document mapper)
 8. Postman (dev)
 9. VS Code REST Client
 10. nodemon (dev)
 11. morgan (dev)
 12. cors (cross-origin middleware)
 13. static (express's middleware to display static)
+14. dotenv (creates env variables)
 
 ### More Information  
 https://fullstackopen.com/en/about
