@@ -213,5 +213,23 @@
     - Verifying frontend and backend integration
         - Test backend first using Postman or VS Code REST Client before testing with frontend
         - It is also good idea to implement one functionality at a time, then test it making sure that it works, then move on to the next functionality
-        - 
+    - Error handling
+        - Mongo has its own id format
+        - If requested id is not in the correct Mongo format, a CastError will be shown
+        - 500 is server error
+        - 404 is not found
+        - 400 is bad syntax request
+        - **Always keep an on the console of the backend**
+    - Moving error handling in to middleware
+        - It is better to implement all error handling in a single place
+        - It is useful as you can reprort data related to error tracking system like Sentry
+        - To process error, use middleware next() so Express can process the error
+        - defined errorHandlers middleware has to be the last loaded middleware
+    - The order of middleware loading
+        - The execution order is the same as how they are loaded into express using app.use() 
+        - The json-parser middleware should be among the very first to be loaded
+    - Other Operations
+        - delete using mongoose -> findByIdAndRemove method
+        - update using mongoose -> findByIdAndUpdate method
+        
 ### Validation and ESLint

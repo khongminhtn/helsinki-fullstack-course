@@ -23,7 +23,7 @@ app.use(cors())
 app.use(express.static('build'))
 
 
-// ==== Responding to API Requests ====
+// ==== Route Handler ====
 // We create event handlers to repond to GET, POST, DELETE, PUT, PATCH requests 
 // We then return a response to the client
 app.get('/api/persons', (req, res) => {
@@ -48,15 +48,20 @@ app.get('/api/persons/:id', (req, res) => {
   Person
     .findById(id)
     .then(person => {
-      console.log(person)
-      res.status(200).json(person)
+      if (person) {
+        res.json(person)
+      } else {
+        res.status(404).end()
+      }
     })
+    .catch(error => next(error)) // middleware next() passes errors to Express
 })
 
-app.delete('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id) 
-  persons = persons.filter(person => person.id !== id)
-  res.status(204).end()
+app.delete('/api/persons/:id', (req, res, next) => {
+  Person
+    .findByIdAndRemove(req.params.id)
+    .then(result => res.status(204).end())
+    .catch(error => next(error))
 })
 
 app.post('/api/persons', (req, res) => {
@@ -70,11 +75,31 @@ app.post('/api/persons', (req, res) => {
       .save()
       .then(result => {
         console.log(`${newPerson.name} and ${newPerson.number} has been added`)
-        
       })
     res.status(200).json(newPerson)
   }
 })
+
+app.put('/api/persons/:id', (req, res) => {
+  // by default updatedPerson is the original document
+  // {new:true} causes event handler to be called with the modified doc
+  console.log(req.body)
+  Person
+    .findByIdAndUpdate(req.params.id, req.body, { new: true })
+    .then(updatedPerson => res.json(updatedPerson))
+})
+
+// ==== Error Handler Middleware ====
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+  if (error.name === 'CastError') {
+    return response.status(400).send({error: 'malformatted id'})
+  }
+
+  next(error)
+}
+
+app.use(errorHandler)
 
 // Once event handlers are defined, we create a listener that listens for the Client requests
 // that are being sent to the port we defined.
