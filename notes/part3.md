@@ -213,13 +213,13 @@
     - Verifying frontend and backend integration
         - Test backend first using Postman or VS Code REST Client before testing with frontend
         - It is also good idea to implement one functionality at a time, then test it making sure that it works, then move on to the next functionality
-    - Error handling
-        - Mongo has its own id format
-        - If requested id is not in the correct Mongo format, a CastError will be shown
-        - 500 is server error
-        - 404 is not found
-        - 400 is bad syntax request
-        - **Always keep an on the console of the backend**
+- Error handling
+    - Mongo has its own id format
+    - If requested id is not in the correct Mongo format, a CastError will be shown
+    - 500 is server error
+    - 404 is not found
+    - 400 is bad syntax request
+    - **Always keep an on the console of the backend**
     - Moving error handling in to middleware
         - It is better to implement all error handling in a single place
         - It is useful as you can reprort data related to error tracking system like Sentry
@@ -231,5 +231,19 @@
     - Other Operations
         - delete using mongoose -> findByIdAndRemove method
         - update using mongoose -> findByIdAndUpdate method
+    - Understand that promise if fulfilled, will be handled with .then() and if rejected, it will be handled with .catch() 
         
 ### Validation and ESLint
+- Mongoose has built in validation
+    - Built in validation is set in the schema (structure)
+    - If input is invalid, an exception will be thrown with error.name and error.message
+    - The exception is then passed to error handlers middleware
+    - 
+- Promise chaining
+    - many route handlers change the response data to the right format by calling toJSON method from response.json
+    - Understand that API requests and response works as promises. How we work with promises is using its method **then**. The callbacks then is what we use to handle the fullfilled value or rejections
+    - By chaining the **then** callbacks this would be called Promise chaining
+    -  A much easier using *async/await* syntax, it will make writing subsequent asychronous operations a lot easier.
+- Deploying the database backend to production
+    - add mongo uri env to heroku and push the backend app to heroku
+    - commandline: heroku config:set MONGODB_URI=variable/'variable'

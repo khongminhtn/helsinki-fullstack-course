@@ -23,6 +23,7 @@ app.use(cors())
 app.use(express.static('build'))
 
 
+
 // ==== Route Handler ====
 // We create event handlers to repond to GET, POST, DELETE, PUT, PATCH requests 
 // We then return a response to the client
@@ -64,20 +65,16 @@ app.delete('/api/persons/:id', (req, res, next) => {
     .catch(error => next(error))
 })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
+
   const newPerson = req.body
-  if (!newPerson.name) {
-    return res.status(400).send('Missing name')
-  } else if (!newPerson.number) {
-    return res.status(400).send('Missing number')
-  } else { 
-    new Person({name: newPerson.name, number: newPerson.number})
-      .save()
-      .then(result => {
-        console.log(`${newPerson.name} and ${newPerson.number} has been added`)
-      })
-    res.status(200).json(newPerson)
-  }
+  new Person({name: newPerson.name, number: newPerson.number})
+    .save()
+    .then(savedPerson => savedPerson.toJSON())
+    .then(savedAndFormattedPerson => {
+      res.json(savedAndFormattedPerson)
+    })
+    .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (req, res) => {
@@ -91,9 +88,10 @@ app.put('/api/persons/:id', (req, res) => {
 
 // ==== Error Handler Middleware ====
 const errorHandler = (error, request, response, next) => {
-  console.error(error.message)
   if (error.name === 'CastError') {
     return response.status(400).send({error: 'malformatted id'})
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({error: error.message})
   }
 
   next(error)
