@@ -35,6 +35,7 @@ Build one large projects through multiple small exercises. There are 11 parts an
 15. cors (cross-origin middleware)
 16. static (express's middleware to display static)
 17. dotenv (creates env variables)
+18. ESlint (detects errors in source code)
 
 ### More Information  
 https://fullstackopen.com/en/about

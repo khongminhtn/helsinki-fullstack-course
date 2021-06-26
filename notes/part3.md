@@ -247,3 +247,4 @@
 - Deploying the database backend to production
     - add mongo uri env to heroku and push the backend app to heroku
     - commandline: heroku config:set MONGODB_URI=variable/'variable'
+- Eslinting in other word "linting" is a tool that detects and flags errors in programming languages, including stylistic errors

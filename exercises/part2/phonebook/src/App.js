@@ -89,6 +89,12 @@ const App = () => {
           }, 5000)
           setPersons(persons.concat(data))
         })
+        .catch(error => {
+          setErrorMessage(`${error.response.data.error}`)
+          setTimeout(() => {
+            setErrorMessage('')
+          }, 5000)
+        })
     : personService
         .update(existingPerson.id, newPerson)
         .then(data => {
