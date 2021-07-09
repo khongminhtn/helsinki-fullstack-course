@@ -36,6 +36,12 @@ Build one large projects through multiple small exercises. There are 11 parts an
 16. static (express's middleware to display static)
 17. dotenv (creates env variables)
 18. ESlint (detects errors in source code)
+19. supertest (high-level abstraction for testing http api)
+20. cross-env (windows to use cross platform env)
+21. express-async-errors (eliminate try and catch)
+22. async/await
+23. promises
+24. project structure
 
 ### More Information  
 https://fullstackopen.com/en/about
