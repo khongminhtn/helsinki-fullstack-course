@@ -10,6 +10,7 @@
   - config.js
   - logger.js
   - middleware.js (deals with custom middlewares and error handlers)
+9. tests
 
 - require('express').Router()
   - A middleware
@@ -42,27 +43,52 @@
     - ie Scripts: "cross-env NODE_ENV=production node index.js"
   - It is good practice to do tests with database in local machine.
   - It is better to execute only the test you are working on.
+  - Test execution in particular typically requires that a single database instance is not used by tests that are running concurrently.
+  - The optimal solution would be to have every test execution use its own separate database
+    - This can be done by using Mongo's in-memory feature
+    - Or by using Docker containers
 
 - supertest
   - supertest is a package that helps to write api tests
   - async/await refering to API requests is an asynchronous operation
     - It is a simpler syntax compared to promises
   - supertest wraps the express application app.js into a so called superagent
+  - Imports express app "app.js" and wrap it with supertest() into a "superagent", which can be used to make HTTP requests to backend
+  - Default timeout time is 5000
+  - Express application was extracted to app.js, that leaves the role of the index.js file to launch the application at specified port with Node's built-in http object.
 
 - Initializing database
   - Jest offers many other functions that can be used for executing operations before test is run.
+  - For robust tests, database needs to be reset and then generate a test data needed
+    - That means deleting all data in the database and then give the database new data to test.
+    - This insures that the database is at the same state for every test run
+  - Use beforeEach() to intialize the data base
+  - The beforeEach() will run before each test
+
+- Running Tests 1 by 1
+  - Specify tests that need to be ran as a parameter of the npm test command
+  - Example:
+    1. npm test -- tests/note_api.js
+      - Runs all tests in this specific file
+    2. npm test -- -t "a specific note is within the returned notes"
+      - Runs the named test
+    3. npm test -- -t "notes"
+      - Runs all test that contain "notes" in its name
   
 - async/await
   - a much simpler syntax and easier to read
   - const notes = await Note.find({})
     - await will pause at the execution, until promise is full filled
-    - response is then passed on to the constants notes
-  - better syntax than .then().then() chaining
+    - once fulfilled, response is then passed on to the constants notes
+  - better syntax than .then().then() chaining (promise chaining)
   - **In order to use async/await syntax, they have to return a promise**
-    - whereas regular asynchronous functions can be wrap callbacks on promise
+    - whereas regular asynchronous functions can wrap callbacks on promise
   - **await keyword can only be used inside of an async function**
   - **Although it is such a simple syntax, it is still important to understand how promises works**
   - use either async/await or then(), but never mix the two.
+
+- backend async/await refactoring
+  - when refactoring there is always risk of regression (existing functionality may break)
 
 - Error handling and async/await
   - use try { } catch { } mechanism
@@ -78,3 +104,6 @@
 - Optimizing the beforeEach function  
   - async operations will only wait for await defined inside of it
   - to wait for all await operations, Promise.all(arrayOfPromises) needs to be called, it will wait for all of the promises inside the list to be fulfilled before itself is fulfilled
+
+- Refactoring tests
+  

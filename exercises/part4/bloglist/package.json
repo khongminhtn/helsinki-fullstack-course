@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js",
-    "test": "jest --verbose"
+    "start": "cross-env NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
+    "test": "cross-env NODE_ENV=test jest --verbose --runInBand --testTimeout=10000"
   },
   "author": "Tuyen Khong",
   "license": "MIT",
@@ -16,6 +17,7 @@
     "mongoose": "^5.13.2"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "eslint": "^7.30.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.23.4",

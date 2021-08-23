@@ -2,7 +2,7 @@ POST http://localhost:3000/api/blogs
 Content-Type: application/json
 
 {
-  "title": "Bitcoin",
+  "title": "Bitcoins",
   "author": "Tuyen Khong",
   "url": "bbcnews.com",
   "likes": 19
