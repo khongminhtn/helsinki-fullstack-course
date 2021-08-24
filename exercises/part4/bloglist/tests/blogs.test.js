@@ -70,9 +70,7 @@ test('missing url & title', async () => {
       .response.status(404)
       .expect(404)
   }
-
 })
-
 
 // afterAll() once all tests done, close mongoose connections
 afterAll(() => {

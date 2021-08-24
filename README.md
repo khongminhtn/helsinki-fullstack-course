@@ -42,6 +42,7 @@ Build one large projects through multiple small exercises. There are 11 parts an
 22. async/await
 23. promises
 24. project structure
+25. bcrypt (generates pw hashes)
 
 ### More Information  
 https://fullstackopen.com/en/about
