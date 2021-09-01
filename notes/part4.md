@@ -118,7 +118,8 @@
   - However, in the background, it still makes multiple queries
  
 - References accross collections
-  - mongoose.Schema.Types.ObjectId
+  - **types: mongoose.Schema.Types.ObjectId** AND **ref: models**
+    - defines the type to be an object id and the id refers to a model in the database
   - 1 document can have a reference to another document
   - Document databases use references to link databases together
   - A document can also hold a list of references to other documents
@@ -144,8 +145,64 @@
     - It will still be doing multiple queries 
     - Relational database's join queries is transactional meaning that the database does not change during query
     - Whereas mongoose queries operations, database can still change during queries.
-  - To populate using mongoose, perform a find({}) method that contains nested documents and then chain populate('document') method to populate.
+  - To populate using mongoose, perform a find({}) method that contains nested documents and then chain populate('field') method to populate.
     - User.find({}).populate('notes')
     - We can also use populate() to only retrieve field specifics
       - populate('notes', {content: 1, date: 1} )
   - populate functionality works based on the defined **types** and **ref** in the Mongoose schema.
+  - Populate functionality will use the id in the nested document and populate it with the actuall object
+ 
+# Token authentication  
+![token authentication diagram](https://fullstackopen.com/static/8b2839fe97680c325df6647121af66c3/5a190/16e.png)
+- Diagram to text:
+  1. Users logs in using form from React
+  2. React sends login info to server address as GET HTTP Request
+  3. If info correct, server generates token to indentify user
+    - Token is signed digitally and it is impossible to falsify (cryptography)
+  4. Backend responds with successful status code and the token
+  5. Browser saves the token to a react state
+  6. When users performs operations that requires indentification, server sends a HTTP request with Token in header
+  7. Server uses the token to identify the user
+- We use jsonwebtoken library to generate [JSON web tokens](https://jwt.io/)
+- Processing login in back end procedure:
+  1. Search for username using requested username
+  2. If found, compares requested password hases with password hases in database using bcrypt.compate(requested, database)
+  3. If correct, then create an object of username and user id to generate a token using jwt.sign(userObject, env)
+  4. Then save to environment variable, must be set in .env file
+  5. Sends status code 200 after success
+  6. Else sends appropriate status codes 401 (unauthorized).
+ 
+- Limiting creating new notes to logged in users
+  - There are several ways of sending token to server
+  - We use [Authorization header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization)
+    - It contains authentication information
+    - Including tokens and [authentication schemes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#Authentication_schemes)
+    - Identifying the scheme tells the server how the attached credentials should be interpreted
+  - The *Bearer* scheme is suitable
+    -  Bearer eyJhbGciOiJIUzI1NiIsInR5c2VybmFtZSI6Im1sdXVra2FpIiwiaW
+  - use jwt.verify(requestedToken, browserToken) to compare tokens
+  
+- Error handling
+  - Token verification can also cause a JsonWebTokenError 
+  - Reasons for decoding error
+    - Token can be faulty
+    - falsified
+    - expired
+  - If application requiring multiple interfaces requiring identification, JWT's validation should be seperated into its own middleware
+ 
+- Problems of Token-based authentication
+  - Once React app gets a token, the API has a blind trust to the token holder
+    - What if the token holder has ill intentions ?
+    - Solutions
+      1. Limit the validity period of a token
+        - using jwt.sign(userObject, env, **settings**)
+        - settings: {expiresIn: 60*60}
+        - error handling middleware should be extended properly to deal with error
+        - The shorter the time, the safer the solution, but it is painful for true users
+      2. server side session
+        - save each token to backend database and check each api request if access right corresponds to the token
+        - Negative aspect of server side session is increased complexity in the backend and affect on performance
+        - Typically token is saved to a key-value-database such as Redis (limited functionaltiy), but extremely fast in some usage scenarios
+        - Token are just a random string
+        - each API request, the server collects relevant information about the user
+        - These strings are stored in cookies rather than in Authorization-header

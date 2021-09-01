@@ -91,6 +91,8 @@
     - Several middleware can be used at the same time
         - executed 1 by 1 in order
         - in Express it is executed with app.use(middleware())
+    - middleware can be chained in .user(middleware1, ..., middlewareN)
+    - or middleware can also be registered for specific route calls
 
 ### Deploying App to internet
 - CORS

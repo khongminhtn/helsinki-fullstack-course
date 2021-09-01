@@ -43,6 +43,8 @@ Build one large projects through multiple small exercises. There are 11 parts an
 23. promises
 24. project structure
 25. bcrypt (generates pw hashes)
+26. bcryptjs (generates pw hashes for windows)
+27. jsonwebtoken (generates JSON web tokens)
 
 ### More Information  
 https://fullstackopen.com/en/about
