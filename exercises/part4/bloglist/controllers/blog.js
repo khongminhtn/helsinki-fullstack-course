@@ -15,7 +15,6 @@ blogRouter.get('', async (request, response) => {
 blogRouter.post('', async (request, response, next) => {
   try {
     const body = request.body
-
     if (!request.token || !request.user.id) {
       return response.status(401).json({
         error: 'token missing or invalid'
@@ -37,7 +36,6 @@ blogRouter.post('', async (request, response, next) => {
     await user.save()
   
     response.status(201).json(savedBlog)
-    
   } catch(exception) {
     next(exception)
   }
