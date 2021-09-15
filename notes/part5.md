@@ -65,4 +65,59 @@
     - if 'Failed to load plugin react: Cannot find module 'eslint-plugin-react' is shown then additional configuration is needed
     - adding "eslint.workingDirectories": [{"mode": "auto"}] to setting.json seems to work
   - .eslintignore can be created to ignore certain files
+
+# Testing React apps
+- Jest is created by facebook and by default it has already been installed with create-react-app
+- In addition to jest, curent best option for a testing library to test components rendering is react-testing-library
+- Installation
+  - npm install --save-dev @testing-library/react @testing-library/jest-dom
+- CSS className is used to appoint a component to a test
+
+- Rendering the component for tests
+  - Test can be written in same folder as components
+  - imports:
+    - import '@testing-library/jest-dom/extend-expect'
+    - import { render } from '@testing-library/react'
+  - syntax:
+    - test('name', () => { render() expects() })
+  - Normally react components is rendered to DOM
+  - however when testing, we use render() to test its contents
+    - [render()](https://testing-library.com/docs/react-testing-library/api/#render) returns an object that has several properties
+    - property *container* contains all the HTML rendered by the component
+ 
+- Running tests
+  - create-react-app configure test to run in watch mode by default
+    - test will not exit, but carry on waiting for any changes to the code
+    - once new code is saved, test is executed again automatically
+    - to run test normall run command **CI=true npm test**
+  - console may issue warnings if Watchman is not installed, it watches for any changes made to the files
+ 
+- Test file location
+  - Current standard is to keep test files in the same place as the components being tested
+  - Or tests files can have their own directory
+  - Whichever convention is chosen, it is going to opinionated
+ 
+- debugging tests
+  - the object returned by render method has a debug method
+  - render(component).debug() 
+    - this will log the html content to the console 
+  - to search for smaller part of the component we use imported *prettyDOM*
+    - import { prettyDOM } from '@testing-library/dom'
+      - const li = component.container.querySelector('li')
+      - console.log(prettyDOM(li))
+  - getByText() method of render() returned object is just one of many queries  react-testing-library offers
+  - fireEvent.click(component.getByText('name of button')) is one of the methods that can be used to fire events
+ 
+- Testing the forms
+  - fireEvent
+    - fireEvent.change({ target: { value: 'contents' } })
+      - changes the input within a form
+    - fireEvent.submit(form)
+      - submits the form
+ 
+- Test coverage
+  - command for finding out test coverage
+    - **CI=true npm test -- --coverage**
+  - the coverage is quietly saved to dir *coverage/icov-report*
+  - reports tells us lines of untested code
   

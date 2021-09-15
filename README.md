@@ -45,6 +45,8 @@ Build one large projects through multiple small exercises. There are 11 parts an
 25. bcrypt (generates pw hashes)
 26. bcryptjs (generates pw hashes for windows)
 27. jsonwebtoken (generates JSON web tokens)
+28. react-testing-library (test components render)
+29. watchman (made by facebook to watch for changes made to files)
 
 ### More Information  
 https://fullstackopen.com/en/about
