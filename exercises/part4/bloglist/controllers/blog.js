@@ -44,9 +44,12 @@ blogRouter.post('', async (request, response, next) => {
 blogRouter.delete('/:id', async (request, response, next) => {
   try {
     const requestBlogId = request.params.id
-  
+    console.log('CONSOLE LOGGING:', request.token)
+    console.log('CONSOLE LOGGING:', request.user)
+    console.log('CONSOLE LOGGING:', request.params)
     // Verify that user is the creator of blog
     const blog = await Blog.findById(requestBlogId)
+    console.log(blog)
 
     blog.userId.toString() === request.user.id
       ? await Blog.findByIdAndRemove(requestBlogId)
