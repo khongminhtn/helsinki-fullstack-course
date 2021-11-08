@@ -47,6 +47,14 @@ Build one large projects through multiple small exercises. There are 11 parts an
 27. jsonwebtoken (generates JSON web tokens)
 28. react-testing-library (test components render)
 29. watchman (made by facebook to watch for changes made to files)
+30. Redux (Flux architecture, state management library)
+31. Cypress (E2E testing ) & eslint-plugin-cypress (by pass eslint errors for cypress)
+32. Jest to test both backend and react -> unit and integration testing
+33. [deep-freeze](https://github.com/substack/deep-freeze) (ensures reducer is immutable function)
+34. react-redux (library that helps accessing the store from different modules)
+35. redux devtool chrome extension
+36. redux-devtools-extension
+37. redux-thunk (abstracts server communication, creates async actions)
 
 ### More Information  
 https://fullstackopen.com/en/about
