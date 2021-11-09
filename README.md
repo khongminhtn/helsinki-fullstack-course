@@ -55,6 +55,7 @@ Build one large projects through multiple small exercises. There are 11 parts an
 35. redux devtool chrome extension
 36. redux-devtools-extension
 37. redux-thunk (abstracts server communication, creates async actions)
+38. react-router-dom
 
 ### More Information  
 https://fullstackopen.com/en/about
