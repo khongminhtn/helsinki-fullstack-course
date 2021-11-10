@@ -213,8 +213,5 @@ const person = {
     
 - Material UI (Google)
   - npm install @material-ui/core
-  - Head tag: 
-  ```
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
-  ```
+  - Head tag: `<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />`
   - Renders whole app in `<Container>`
