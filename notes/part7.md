@@ -202,3 +202,19 @@ const person = {
   - [Awrsome react hooks resources](https://github.com/rehooks/awesome-react-hooks)
   - [Easy to understand React Hook rescipes](https://usehooks.com/)
   - [Why do react hooks rely on call order](https://overreacted.io/why-do-hooks-rely-on-call-order/)
+ 
+# More about styles
+- React boostrap (Twitter)
+  - npm install react-bootstrap
+    - Head tag: href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    - In bootstrap all contents are rendered inside [container](https://getbootstrap.com/docs/4.1/layout/overview/#containers)
+    - Bootstrap react have built in component such: **table, button, form, alert**
+      - import { Table, Button, Forms, Alert, Navbar } from 'react-bootstrap'
+    
+- Material UI (Google)
+  - npm install @material-ui/core
+  - Head tag: 
+  ```
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+  ```
+  - Renders whole app in <Container>
