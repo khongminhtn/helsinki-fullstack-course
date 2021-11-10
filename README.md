@@ -56,6 +56,20 @@ Build one large projects through multiple small exercises. There are 11 parts an
 36. redux-devtools-extension
 37. redux-thunk (abstracts server communication, creates async actions)
 38. react-router-dom
+39. @material-ui/core (google's ui library)
+40. react-bootstrap (bootstrap ui libraries for react)
+41. styled-components (Creates styled compponents that can be wrap other components)
+42. webpack 
+43. webpack-cli
+43. babel-loader 
+    - @babel/preset-react
+    - @babel/core 
+    - @babel/polyfill
+    - @babel/preset-env
+44. style-loader (loads styles for webpack)
+45. css-loader (loads css files for webpack)
+46. webpack-dev-server (solution to workflow)
+47. promise-polyfill (allows older browser to run new functionality)
 
 ### More Information  
 https://fullstackopen.com/en/about

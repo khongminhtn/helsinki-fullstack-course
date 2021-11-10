@@ -214,4 +214,355 @@ const person = {
 - Material UI (Google)
   - npm install @material-ui/core
   - Head tag: `<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />`
-  - Renders whole app in `<Container>`
+  - Renders whole app in `<Container></Container>`
+```
+import { 
+  Container, 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableContainer, 
+  TableRow, 
+  Paper,
+  TextField,
+  Toolbar,
+  IconButton,
+  Button
+} from '@material-ui/core'
+```
+  - Alert component is not included in material core
+  - npm install @material-ui/lab
+    - import { Alert } from '@material-ui/lab'
+
+- **YOU CAN USE [npmtrends](https://www.npmtrends.com/) TO CHECK NPM POPULARITY**
+- **[STYLED COMPONENTS](https://www.styled-components.com/) CONSIDERED TO BE THE BEST FOR REACT**
+  - npm install styled components
+
+# Webpack
+- Developing react was notorious for difficulty in configuration
+- Create-react-app made it painless
+  - *Under the hood, one of the key player of create-react-app is webpack*
+- **Bundling**
+  - Old browsers does not know how to handle modules
+  - For this reason, modules must be bundled for browsers
+    - All *SOURCE* code files are transformed into a single file
+    - npm run build in react runs a script that bundles the source code
+
+npm run build produces the following files
+```
+├── asset-manifest.json
+├── favicon.ico
+├── index.html
+├── manifest.json
+├── precache-manifest.8082e70dbf004a0fe961fc1f317b2683.js
+├── service-worker.js
+└── static
+    ├── css
+    │   ├── main.f9a47af2.chunk.css
+    │   └── main.f9a47af2.chunk.css.map
+    └── js
+        ├── 1.578f4ea1.chunk.js
+        ├── 1.578f4ea1.chunk.js.map
+        ├── main.8209a8f2.chunk.js
+        ├── main.8209a8f2.chunk.js.map
+        ├── runtime~main.229c360f.js
+        └── runtime~main.229c360f.js.map
+```
+  - It bundles all css in 1 css file and all javascript in 1 file
+  - Bundling entry point is index.js, is main file that takes whole of apps imports
+  - Old HTML loads multiple `<script>`, it decreases performance
+  - Bundling all modules to 1 helps increase performance, HTML only need to load 1 `<script>` file
+  - HTML should have 1 script tag that access the main.js file
+
+- Webpack configuration
+  - **npm install --save-dev webpack webpack-cli**
+  - "script": { "build": "webpack --mode=development" }
+  - functionality of webpack is defined in **webpack.config.js**
+ 
+```
+// Initial content
+// Exports and Imports uses node.js syntax
+const path = require('path')
+
+// absolute path => path.resolve() 
+// __dirname => global varible stores path to current directory
+// entry => starting point for bundling
+// ouput => where the bundled files will be stored
+const config = {
+  entry: './src/index.js',
+  output: {
+    path: path.resolve(__dirname, 'build'),       
+    filename: 'main.js'
+  }
+}
+module.exports = config  
+```
+ 
+- Bundling React
+  - By default, webpack only deals with plain Javascript
+  - to bundle JSX, a [loader](https://webpack.js.org/concepts/loaders/) is required. As JSX is not plain JS
+  - **npm i -D @babel/core babel-loader @babel/preset-react**
+  - Loaders are defined under **module** property
+    - **definition:** (3 parts)
+      - **test** (specifies loader is for .js files)
+      - **loader** (specifies processing will be done with babel-loader)
+      - **options** (specifies params to configure loader's functionality)
+  - If react uses async/await, @babel/polyfill is needed - [more info](https://stackoverflow.com/questions/33527653/babel-6-regeneratorruntime-is-not-defined)
+    - **npm install @babel/polyfill**
+  - Most developers used presets, which are pre-configured plugins
+    - **npm install @babel/preset-env**
+    - this plugin takes in latest features ES6 and ES7 and transpiles to ES5 standard
+  - CSS
+    - **npm i -D style-loader css-loader**
+    - css-loader => loads css files
+    - style-loader => loads all style elements for that application
+
+
+**Loader Configuraton**
+```
+const config = {
+  entry: ['@babel/polyfill', './src/index.js'],
+  output: {
+    path: path.resolve(__dirname, 'build'),
+    filename: 'main.js',
+  },
+  module: {    
+    rules: [      
+      {        
+        test: /\.js$/,        
+        loader: 'babel-loader',        
+        options: {          
+          presets: ['@babel/preset-env', '@babel/preset-react'],        
+        },      
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
+      }    
+    ],  
+  },
+}
+```
+ 
+- Transpilers
+  - process of transforming JS code to  another is called [transpiling](https://en.wiktionary.org/wiki/transpile)
+  - compiles source code and transforming it from one language to another
+  - babel transpiles JSX codes into JS code, 
+  - babel currently most popular for the job (2021)
+  - Most browsers still does not support ES6 or ES7
+    - Therefore babel transpiles JSX into ES5 standard version
+  
+- Webpack-dev-server
+  - Current configuration makes bad workflow
+  - Changes to the code requires re-bundling and refreshing browser
+  - [webpack-dev-server](https://webpack.js.org/guides/development/#using-webpack-dev-server) offers solution
+    - npm i -D webpack-dev-server
+    - "start": "webpack serve --mode=development"
+    - and add devServer property to webpack.config.js
+```
+const config = {
+  entry: './src/index.js',
+  output: {
+    path: path.resolve(__dirname, 'build'),
+    filename: 'main.js',
+  },
+  devServer: {    
+    static: path.resolve(__dirname, 'build'),    
+    compress: true,    
+    port: 3000,  
+  },  
+  // ...
+};
+```
+  - running npm start will start dev-server at port 3000
+  - Changes to code will refresh the page
+  - the process of bundling with dev-server exists only in memory, not bundled into main.js 
+ 
+- Source Maps
+  - When errors are displayed in console, the source code is from bundled source code
+  - adding **devtool: 'source-map'** to webpack.config.js
+    - will map errors to the original source code
+
+- Minifying the code
+  - main.js by default is quiet heavy in size because it contains all source code of dependencies
+  - to optimize we call this **minification**
+  - most popular tool is [UglifyJS](http://lisperator.net/uglifyjs/)
+    - Webpack 4, Uglify does not require configuration
+    - **"build": "webpack --mode=produciton"** should be enough 
+    - all codes will be in a single line
+ 
+- Development and production configuration
+  - webpack can also bundle application and point server to certain location
+  - webpack.config.js object can be changed to a function
+    - the function is the exported
+    - functions takes 2 arguments
+      - env => 
+      - argv => access webpack mode defined in npm script
+  - DefinePlugin({CONST_VARIABLE: JSON.stringify(value)})
+    - define global default constants that can be used in bundled code
+```
+const path = require('path');
+
+const config = (env, argv) => {
+  const backend_url = argv.mode === 'production'    
+    ? 'https://blooming-atoll-75500.herokuapp.com/api/notes'    
+    : 'http://localhost:3001/notes'
+
+  return {
+    entry: './src/index.js',
+    output: {
+      // ...
+    },
+    devServer: {
+      // ...
+    },
+    devtool: 'source-map',
+    module: {
+      // ...
+    },
+    plugins: [
+      new webpack.DefinePlugin({        
+        BACKEND_URL: JSON.stringify(backend_url)      
+      })
+    ],
+  }
+}
+
+module.exports = config
+```
+**If the development and production configuration differs a lot, then it is better to seperate them**
+
+- Polyfill
+  - So far, our application should work with most browsers except IE
+  - IE does not support Promises
+  - Theres a lot of things that IE does not support
+  - We need to use [polyfill](https://remysharp.com/2010/10/08/what-is-a-polyfill) to add missing functionaltiy to older browser
+  - Polyfill is added using webpack and babel
+  - or using polyfill libraries
+    - [promise-polyfill](https://www.npmjs.com/package/promise-polyfill)
+    - just add the following code to the application
+    - [exhaustive list of polyfills](https://github.com/Modernizr/Modernizr/wiki/HTML5-Cross-browser-Polyfills)
+    - [compatibility of different browser can be checked here](https://caniuse.com/)
+```
+import PromisePolyfill from 'promise-polyfill'
+
+if (!window.Promise) {
+  window.Promise = PromisePolyfill
+}
+```
+
+- [Eject](https://create-react-app.dev/docs/available-scripts/#npm-run-eject)
+  - create-react-app uses webpack behind the scenes
+  - If default configuration needs modifying, you can eject the project
+  - the default configuration files are stored in *config directory* and in *modified package.js*
+  - once ejected there is no return, configuration will be maintained manually
+  - alternative to ejecting, you can write your own webpack configuration from the get go
+  - it is still recommonded to go through the configuration of ejected app, "extremely educational"
+
+# Class components, Miscellaneous
+- Without hooks it would not be possible to define components with just functions
+- You would require to create components using class syntax
+- class components has constructor
+- class components only have 1 state
+- class component is extended from React.Component
+- class component offers no benefits over Functional components except [error boundary](https://reactjs.org/docs/error-boundaries.html)
+- Organization of code in React Application
+  - [The 100% correct way to structure a React App](https://medium.com/hackernoon/the-100-correct-way-to-structure-a-react-app-or-why-theres-no-such-thing-3ede534ef1ed)
+- Front end and backend in the same repository
+  - fitting front end and back end into the same repository:
+    - put package.json and webpack.config.js to root directory
+    - then make 2 sub directory to keep frontend and backend source codes
+    - **client** and **server**
+- changes on the server
+  - one way to sync changes in data of the server and frontend is [polling](https://en.wikipedia.org/wiki/Polling_(computer_science))
+    - Polling is executed on the front end using setInterval()
+  - Another more sophisticated way is to use [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API)
+    - Establishes a two-way communication between browser and server
+    - does not need to poll, instead, define a callback for when server send back data about updating state
+    - It is advisable to not use WebSocket API directly, rather use [Socket.io](https://socket.io/)
+    - Graph QL provides a nice mechanism for notifying clients when there are changes to backend data
+
+- Virtual DOM
+  - Browsers provide a [DOM API](https://developer.mozilla.org/fi/docs/DOM)
+  - In react, developer rarely or never modify the DOM
+  - The function returning React Component returns a set of React elements
+    - The react elements looks like HTML
+    - These elements defining the appearance of the components make up the [Virtual Dom](https://reactjs.org/docs/faq-internals.html#what-is-the-virtual-dom)
+    - [ReactDOM](https://reactjs.org/docs/react-dom.html) library renders virtual DOM to the real DOM
+      - ReactDOM.render(`<App/>`, document.getElementById('root'))
+      - Upon stage change, react use previous virutal DOM and compares with the new virtual DOM. Then it changes only whats neccesary.
+  
+- On the role of React in applications
+  - React is primarily a library for managing the creation of views
+  - [Model View Controller](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) pattern, then React is the View
+  - The state of the components is the Model
+  - With Redux we can almost seperate logic out of React so React can focus solely on View
+    - This is using react "wrongly", however [over-engineering](https://en.wikipedia.org/wiki/Overengineering) is rarely yields an optimal result
+  
+- React/node application security
+  - [OWASP](https://www.owasp.org/) publishes an annual list of most common security risk Web application
+  - One common risk is SQL Injections
+    - prevented by [sanitizing](https://security.stackexchange.com/questions/172297/sanitizing-input-for-parameterized-queries) the input
+      - checks that query does not contain any forbidden characters
+      - If forbidden are found they are replaced with alternatives by [escaping](https://en.wikipedia.org/wiki/Escape_character#JavaScript)
+  - Another is Cross-site scripting (XSS)
+    - Injects JS code into a legitimate web app
+  - It is important to do security updates on libraries used
+  - **npm outdated --depth 0**
+  - **npm audit** can be used to check security of dependencies
+  - **npm audit fix** to fix the threats
+  - Another threat is Broken Authentication and Broken Access Control
+    - When implementing access control, always check identity in the browser AND server
+  - Express security article [Production Best Practices: Security](https://expressjs.com/en/advanced/best-practice-security.html) 
+  - It is recommended to add library called [Helmet](https://helmetjs.github.io/)
+    - Includeds middlewares to eliminate security vulnerability in Express
+  - Using ESlint [security-plugin](https://github.com/nodesecurity/eslint-plugin-security)
+
+**THE SINGLE MOST IMPORTANT LESSON YOU CAN LEARN ABOUT WEBSITE IS NEVER TRUST DATA FROM THE BROWSER**
+**THESE INCLUDES URL, PARAMETERS OF GET, POST, HEADERS, COOKIES and USERS UPLOADED FILES**
+**ALWAYS CHECK AND SANITIZE ALL INCOMING DATA**
+**ALWAYS ASSUME THE WORST**
+
+- Current trends
+  - The [dynamic typing](https://developer.mozilla.org/en-US/docs/Glossary/Dynamic_typing) are bugs prone
+    - PropTypes enforces type checking for props
+    - [Static type](https://en.wikipedia.org/wiki/Type_system#Static_type_checking) is popular
+      - Typescript is most popular static type javascript at the moment
+        - Developed by microsoft
+  - Server-side rendering, ismorphic applications and universal code
+    - Server-side rendering
+      - Visiting a site for first time, server will render a react page
+      - After, it will let the browser execute the react app as usual
+      - Main motivation is Search Engine Optimization
+      - More info: [here](https://www.javascriptstuff.com/react-seo/) and [here](https://medium.freecodecamp.org/seo-vs-react-is-it-neccessary-to-render-react-pages-in-the-backend-74ce5015c0c9)
+  - [Progressive web app](https://developers.google.com/web/progressive-web-apps/)
+    - Application is:
+      - Able to work flawlessly offline mode -> use [Service Worker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API)
+      - Able to work with Slow connection
+      - Able to still operate on smaller or larger screens
+      - Must be installable like anyother application
+      - All network traffic should be encrypted
+  - Microservice Architecture
+    - Application in this course is a monolithic backend architecture (simple and singular functionality)
+    - Composes the backend from many seperated independent services
+    - These services communicate with eachother over a network
+    - Each service takes care of a particular logical functional whole
+    - Does not use a shared database
+    - [API Gateway](http://microservices.io/patterns/apigateway) provides an illusion of "everything on the same server" API
+    - Serves the needs for large internet scale apps
+    - Trend was set by Jeff Bezoz in 2002
+>
+    All teams will henceforth expose their data and functionality through service interfaces.
+
+    Teams must communicate with each other through these interfaces.
+
+    There will be no other form of inter-process communication allowed: no direct linking, no direct reads of another team’s data store, no shared-memory model, no back-doors whatsoever. The only communication allowed is via service interface calls over the network.
+
+    It doesn’t matter what technology you use.
+
+    All service interfaces, without exception, must be designed from the ground up to be externalize-able. That is to say, the team must plan and design to be able to expose the interface to developers in the outside world.
+
+    No exceptions.
+
+    Anyone who doesn’t do this will be fired. Thank you; have a nice day!
+
