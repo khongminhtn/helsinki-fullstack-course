@@ -9,7 +9,9 @@
 // USAGE OF REACT ROUTER
 import {
   BrowserRouter as Router,
-  Switch, Route, Link
+  Switch, 
+  Route, 
+  Link
 } from "react-router-dom"
 
 const App = () => {
@@ -566,3 +568,17 @@ if (!window.Promise) {
 
     Anyone who doesn’t do this will be fired. Thank you; have a nice day!
 
+- [Serverless](https://serverless.com/)
+  - With cloud computing emerge, it enables *the execution of individual functions in the cloud*
+  - Not about not have a server, but rather how server is defined.
+  - Theres no longer a need to define HTTP requests, database relations as it all provide by cloud infrastructure
+  - Cloud allows well-scaling system
+  
+- Useful libraries and interesting links
+  - handling complicated data use [lodash](https://www.npmjs.com/package/lodash) or [ramda](https://ramdajs.com/) for functional programming
+  - handling datas and times [date-fns](https://github.com/date-fns/date-fns)
+  - handling forms Formik and redux-form can be used
+  - hanhdling chars recharts and highcharts are recommended
+  - handling immutable then use immutable.js 
+  - [React Google Analytics](https://github.com/react-ga/react-ga) offers analytics of users
+  - [React best pratices chart](https://reactpatterns.com/) 

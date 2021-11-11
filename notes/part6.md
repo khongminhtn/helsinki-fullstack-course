@@ -5,7 +5,7 @@ As application grows, state management should be moved outside of React's Compon
   - State is completely seperated from React-Components to **stores**
   - States in stores are not directly changed, but with different **actions**
   - When an action changes a state, the views are re-rendered
-  - Action -> Dispatcher -> Store -> View
+  - **Action -> Dispatcher -> Store -> View**
   - If an action causes the state to change again, this will trigger another re-render
  
 - Redux
@@ -252,7 +252,7 @@ ReactDOM.render(
   - each reducer will manage states that it has been assigned to. 
 
 ```
-// Reducers blueprint to manipulate states 
+// Reducers are blueprint to manipulate states 
 // dictated by given actions from actionCreators
 export default const noteReducer = (state = data), action) => {expressions}
 export default const filterReducer = (state = data), action) => {expressions}
