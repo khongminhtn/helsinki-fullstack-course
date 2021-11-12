@@ -15,3 +15,9 @@ Directory Structure (GENERAL RULE)
 - Use fully qualified globally unique names eg. HeaderNav is inside Header.
  
 ![Example](./images/directory-structure.png)
+ 
+What about container components ?
+- Treat them like presentational components
+- Leave out of dir structure. Only job is provide data
+ 
+![Container component](./images/directory-structure-container.png)
