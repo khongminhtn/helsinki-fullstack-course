@@ -13,4 +13,5 @@ To work out the 100% correct application:
 Directory Structure (GENERAL RULE)
 - If module used by only 1 other Module, keep them in the same dir
 - Use fully qualified globally unique names eg. HeaderNav is inside Header.
+ 
 ![Example](./images/directory-structure.png)
