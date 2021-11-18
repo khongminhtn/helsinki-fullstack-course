@@ -104,7 +104,7 @@ query {
 }
 ```
  
-- [Apollo Server](https://www.apollographql.com/docs/apollo-server/)
+### [Apollo Server](https://www.apollographql.com/docs/apollo-server/)
   - Today's leading GraphQL-server libray
   - **npm install apollo-server graphql**
   - **const { ApolloServer, gql } = require('apollo-server')**
@@ -177,20 +177,20 @@ server.listen().then(({ url }) => {
   console.log(`Server ready at ${url}`)
 })
 ```
- 
-- GraphQL - playground
-  - located at: http://localhost:4000/graphql
-  - Playground is loaded when server is ran in dev mode
-  - Used to make queries to server
-  - red bar indicates where the query is going wrong
-  - DOCS shows the schema of server
 
-- The default resolver
-  - When query, server send exactly the field required
-  - This is because GraphQL must define resolvers for each field of each type  in the schema
-  - When resolvers is not defined, Apollo will define a default resolver
-  - Default resolver will have param **root** where it can access data object
-  - If default resolver is enough then it is recommended that you define it
+### GraphQL - playground
+- located at: http://localhost:4000/graphql
+- Playground is loaded when server is ran in dev mode
+- Used to make queries to server
+- red bar indicates where the query is going wrong
+- DOCS shows the schema of server
+
+### The default resolver
+- When query, server send exactly the field required
+- This is because GraphQL must define resolvers for each field of each type  in the schema
+- When resolvers is not defined, Apollo will define a default resolver
+- Default resolver will have param **root** where it can access data object
+- If default resolver is enough then it is recommended that you define it
 ```
 const resolvers = {
   Query: {
@@ -209,14 +209,14 @@ const resolvers = {
   }
 ```
 
-- Object within an Object
-  - TO GO BACK
+### Object within an Object
+- Object within objects needs to have their own schema and resolvers
 
-- Mutations
-  - GraphQL operations that causes change are mutations
-  - Mutations are described in the schema as **Mutation**
-  - Mutation returns a details of the operation and if fail, will return null 
-  - Mutation also require resolver
+### Mutations
+- GraphQL operations that causes change are mutations
+- Mutations are defined in the schema as **Mutation**
+- Mutation returns a details of the operation and if fail, will return null 
+- Mutation also require resolver to write logic
 ```
 const { v1: uuid } = require('uuid')
 
@@ -260,12 +260,12 @@ mutation {
 }
 ```
 
-- Error handling
-  - Some errors handling can be done automatically with GraphQL validation
-  - Some  GraphQL errors has to be handled manually 
-  - Example: Stricter Mutations rules must be added manually 
+### Error handling
+- Some errors handling can be done automatically with GraphQL validation
+- Some  GraphQL errors has to be handled manually 
+- Example: Stricter Mutations rules must be added manually 
 
-- Enum
+### Enum
 ```
 // Query all person with phone number only
 query {
@@ -308,10 +308,6 @@ const resolver = Query: {
     persons.find(p => p.name === args.name)
 },
 ```
- 
-- Changing a phone number
-  - First define a scheme with mutation with editNumber():Person
-  - Then write a logic in the resolver to update a new person
 
 # React and GraphQL 
 - Communitcation between React and GraphQL works by REST POST to the address of apollo server
@@ -322,7 +318,7 @@ const resolver = Query: {
   - We can use:
     - Relay (Facebook)
     - Apollo Client (Most popular)
-- Apollo Client
+### Apollo Client
   - npm install @apollo/client graphql
 ```
 import React from 'react'
