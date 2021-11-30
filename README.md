@@ -70,6 +70,10 @@ Build one large projects through multiple small exercises. There are 11 parts an
 45. css-loader (loads css files for webpack)
 46. webpack-dev-server (solution to workflow)
 47. promise-polyfill (allows older browser to run new functionality)
+48. ApolloClient (top library for GraphQL)
+49. GraphQL
+50. Apollo Client Devtools (allows inspection of cache)
+
 
 ### More Information  
 https://fullstackopen.com/en/about

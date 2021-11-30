@@ -318,8 +318,11 @@ const resolver = Query: {
   - We can use:
     - Relay (Facebook)
     - Apollo Client (Most popular)
+  
 ### Apollo Client
-  - npm install @apollo/client graphql
+  - **npm install @apollo/client graphql**
+  - Apollo Client is used to communicate with GraphQL server
+  - Allows react to send query to server
 ```
 import React from 'react'
 import ReactDOM from 'react-dom'
@@ -327,6 +330,8 @@ import App from './App'
 
 import { ApolloClient, HttpLink, InMemoryCache, gql } from '@apollo/client'
 
+// Creates new Client to communicate with GRAPHQL server
+// Useds to send query to server
 const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: new HttpLink({
@@ -334,6 +339,7 @@ const client = new ApolloClient({
   })
 })
 
+// Query structure
 const query = gql`
 query {
   allPersons {
@@ -348,10 +354,295 @@ query {
 }
 `
 
+// Sends query and retrieve its data from response
 client.query({ query })
   .then((response) => {
     console.log(response.data)
   })
 
 ReactDOM.render(<App />, document.getElementById('root'))
+```
+ 
+### Making queries 
+- Client can be made accessible to components by wrapping App component with ApolloProvider component
+```
+import React from 'react'
+import ReactDOM from 'react-dom'
+import App from './App'
+
+import { 
+  ApolloClient, ApolloProvider, HttpLink, InMemoryCache} from '@apollo/client' 
+
+// Creates client
+const client = new ApolloClient({
+  cache: new InMemoryCache(),
+  link: new HttpLink({
+    uri: 'http://localhost:4000',
+  })
+})
+
+// Allow client to accessible to child components
+ReactDOM.render(
+  <ApolloProvider client={client}>    
+    <App />
+  </ApolloProvider>,  document.getElementById('root')
+)
+```
+ 
+- Query is made using dominantly **useQuery**
+- Returns an object with multiple field
+  - *loading* true or false
+- Once response received *data* field will be availble to access data
+```
+import React from 'react'
+import { gql, useQuery } from '@apollo/client'
+
+// Structure of query
+const ALL_PERSONS = gql`
+query {
+  allPersons {
+    name
+    phone
+    id
+  }
+}
+`
+
+const Persons = ({ persons }) => {
+  return (
+    <div>
+      <h2>Persons</h2>
+      {persons.map(p =>
+        <div key={p.name}>
+          {p.name} {p.phone}
+        </div>  
+      )}
+    </div>
+  )
+}
+
+const App = () => {
+  const result = useQuery(ALL_PERSONS)
+
+  if (result.loading)  {
+    return <div>loading...</div>
+  }
+
+  return (
+    <Persons persons = {result.data.allPersons}/>
+  )
+}
+
+export default App
+```
+ 
+### Named queries and variables
+- GraphQL built in Variables allows dynamically changing params given to queries
+- **useLazyQuery(gql)** is good for querying with variables 
+- first you define the type $variableName: String!
+- then you consume the varible functionName(name: $variableName)
+```
+query findPersonByName($nameToSearch: String!) {
+  findPerson(name: $nameToSearch) {
+    name
+    phone 
+    address {
+      street
+      city
+    }
+  }
+}
+```
+```
+const FIND_PERSON = gql`  
+  query findPersonByName($nameToSearch: String!) {    
+    findPerson(name: $nameToSearch) {      
+      //..  
+  }
+`
+
+const Person = ({ persons }) => {
+  // when an event call getPerson, it will trigger the hook useLazyHook()
+  // response will be stored in result
+  const [getPerson, result] = useLazyQuery(FIND_PERSON)   
+  const [person, setPerson] = useState(null)
+
+  // getPerson takes an object with a field varible and its value as an object with all dynamic variables
+  const showPerson = (name) => {    
+    getPerson({ variables: { nameToSearch: name } })  
+  }
+}
+```
+ 
+### Cache
+- Client will make a query and then save the data and query to cache
+- Next query, it will retrieve data from cache rather than the server
+- Apollo Client cannot automatically update the cache of an application when adding data
+- except when manipulating exisitng data in the cache with ID types
+- added data needs to be reloaded or update the cache
+ 
+### Doing mutations
+- to use Mutation in React, we use **useMutation**
+ 
+```
+import { gql, useMutation } from '@apollo/client'
+
+const CREATE_PERSON = gql`
+mutation createPerson($name: String!, $street: String!, $city: String!, $phone: String) {
+  addPerson(
+    name: $name,
+    street: $street,
+    city: $city,
+    phone: $phone
+  ) {
+    name
+    phone
+    id
+    address {
+      street
+      city
+    }
+  }
+}
+`
+
+const PersonForm = () => {
+  //...
+  const [ createPerson, result ] = useMutation(CREATE_PERSON)
+
+  const submit = (event) => {
+    //..
+    createPerson({ variables: {name, phone, street, city} })
+    //..
+  }
+  
+  return(//...)
+}
+```
+ 
+### Updating the cache
+1. You can make the query to poll every 2 seconds **useQuery(ALL_PERSONS, { pollInterval: 2000 })**
+2. Or you can refetch the query every mutation 
+**useMutation(CREATE_PERSON, {refetchQueries: [ { query: ALLPERSONS } ] })**
+- You can seperate all gql query instructions in a file *queries.js*
+- Then you can import queries: **import { ALL_PERSONS } from './queries'**
+ 
+### Handling mutation errors
+- errors can be handled using onError option of useMutation hook
+const PersonForm = ({ setError }) => {
+  // ... 
+
+  const [ createPerson, result ] = useMutation(CREATE_PERSON, {
+    refetchQueries: [  {query: ALL_PERSONS } ],
+    onError: (error) => {      
+      setError(error.graphQLErrors[0].message)    
+      }  
+    })
+
+  // ...
+}
+ 
+### Apollo Client and the applications tate
+- Management of application state mostly becomes Apollo Client's responsibility
+- No justifiable reasons to use Redux if GraphQL is used.
+ 
+# Database and user administration
+### Mongoose and Apollo
+- **npm install mongoose mongoose-unique-validator**
+- It is good to keep validation in database
+- **_id** field GraphQL will automatically parse to **id**
+- Resolver also now return a promise, previous returned normal objects
+ 
+### Validation
+- Validation now handled by mongoose so in Mutation, try and catch should be used to catch any errors in the case of invalidation
+ 
+### User and log in
+- The new [context](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) parameter 
+```
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: async () => {}
+})
+
+Query: {
+  //..
+
+  me: (root, args, context) => {
+    return context.currentUser
+  }
+}
+```
+ 
+### Friends list
+**use $in in mongoose search to match any item in the database and return the whole field.**
+- Model.find({ genre: { $in: "database" }})
+- ```returns object that contain genre: ["database"]```
+ 
+# Login and updating the cache
+### User Login
+- Login by querying login mutation to GraphQL
+- Store token in both react app and local storage using useEffect hook
+- to log out, useApolloClient().resetStore() to clear off cache and clear local storage
+ 
+### Adding a token to a header
+- in order to add header to requests we use **setContext**
+```
+import { setContext } from '@apollo/client/link/context'
+
+const authLink = setContext((_, { headers }) => {  
+  const token = localStorage.getItem('phonenumbers-user-token')  
+  return {    
+    headers: {      
+      ...headers,      
+      authorization: token ? `bearer ${token}` : null,    
+    }  
+  }
+})
+
+const httpLink = new HttpLink({ uri: 'http://localhost:4000' })
+
+const client = new ApolloClient({
+  cache: new InMemoryCache(),
+  link: authLink.concat(httpLink)
+})
+```
+
+### Updating cache, revisited
+- initially, to update cache, we pass a 2nd param to useMutation() 
+  - [ { refechtQueries: {query: ALL_PERSONS } ]
+- However, we can update the cache ourselves by passing a call back function to **update**
+  - (store, response) => {}
+    - **store** = reference to the cache
+    - **response** =  data return from the mutation 
+- readQuery will throw errors if cache does not contain necessary data
+- Some situations only sensible way to update cache is **update**
+- When necessary, dis able cache or [single queries](https://www.apollographql.com/docs/react/api/react/hooks/#options)
+- **Be careful with cache as it can cause hard-to-find bugs**
+> There are only two hard things in computer science: cache in validation and naming things
+```
+const PersonForm = ({ setError }) => {
+  // ...
+
+  const [ createPerson ] = useMutation(CREATE_PERSON, {
+    onError: (error) => {
+      setError(error.graphQLErrors[0].message)
+    },
+    update: (store, response) => {      
+      // Read the cache state using readQuery and then passing it to dataInStore variable
+      const dataInStore = store.readQuery({ query: ALL_PERSONS })
+
+      // using writeQuery to update the cache       
+      store.writeQuery({        
+        query: ALL_PERSONS,        
+        data: {          
+          ...dataInStore,          
+          allPersons: [ ...dataInStore.allPersons, response.data.addPerson ]        
+        }     
+      })    
+    } 
+  })
+
+  // ..
+}
 ```
