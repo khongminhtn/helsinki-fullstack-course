@@ -23,8 +23,6 @@ const Books = (props) => {
       variables: { genre }
     }
   )
-  console.log(result)
-
 
   const handleGenres = ({ target }) => {
     setGenre(target.value)

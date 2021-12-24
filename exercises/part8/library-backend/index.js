@@ -6,7 +6,6 @@ const Book = require('./models/Book')
 const User = require('./models/User')
 
 const jwt = require('jsonwebtoken')
-const { NoUnusedVariablesRule } = require('graphql')
 
 const MONGODB_URI = 'mongodb+srv://tuyen:fullstack@cluster0.esu2m.mongodb.net/Cluster0?retryWrites=true&w=majority'
 
@@ -164,7 +163,10 @@ const resolvers = {
       return authors.find(author => author.name === args.name)
     },
     createUser: (root, args) => {
-      const user = new User({ username: args.username })
+      const user = new User({ 
+        username: args.username, 
+        favouriteGenre: args.favouriteGenre 
+      })
 
       return user.save()
         .catch(error => {

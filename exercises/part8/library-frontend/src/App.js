@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
+import Recommend from './components/Recommend'
 import Login from './components/Login'
 
 const App = () => {
@@ -17,7 +18,12 @@ const App = () => {
         {
           token === '' 
             ? <button onClick={() => setPage('login')}>login</button>
-            : <button onClick={() => setPage('add')}>add book</button> 
+            : <button onClick={() => setPage('add')}>add book</button>
+        }
+        {
+          token !== ''
+            ? <button onClick={() => setPage('recommend')}>recommend</button>
+            : null
         }
         {
           token !== ''
@@ -38,6 +44,11 @@ const App = () => {
 
       <NewBook
         show={page === 'add'}
+      />
+
+      <Recommend
+        token={token}
+        show={page === 'recommend'}
       />
 
       <Login
