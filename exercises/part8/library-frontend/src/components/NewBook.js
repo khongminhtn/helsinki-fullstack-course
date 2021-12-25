@@ -6,7 +6,9 @@ mutation AddBook($title: String!, $author: String!, $published: Int!, $genres: [
   addBook(title: $title, author: $author, published: $published, genres: $genres) {
     title
     published
-    author
+    author {
+      name
+    }
     genres
   }
 }
@@ -17,7 +19,9 @@ const ALL_BOOKS = gql`
     allBooks {
       title
       published
-      author
+      author {
+        name
+      }
     }
   }
 `
@@ -46,7 +50,10 @@ const NewBook = (props) => {
     refetchQueries: [ 
       {query: ALL_BOOKS},
       {query: ALL_AUTHORS}
-    ]
+    ],
+    context: {
+      headers: { authorization: `bearer ${props.token}` }
+    }
   })
 
   if (!props.show) {

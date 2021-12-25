@@ -43,6 +43,7 @@ const App = () => {
       />
 
       <NewBook
+        token={token}
         show={page === 'add'}
       />
 

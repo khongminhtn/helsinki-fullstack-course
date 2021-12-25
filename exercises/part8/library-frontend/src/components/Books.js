@@ -90,6 +90,10 @@ const Books = (props) => {
           onClick={handleGenres}
         >classic</button>
         <button 
+          value="database" 
+          onClick={handleGenres}
+        >database</button>
+        <button 
           value="" 
           onClick={handleGenres}
         >all genres</button>
