@@ -1,4 +1,6 @@
 const { ApolloServer, UserInputError, AuthenticationError, gql } = require('apollo-server')
+const { PubSub } = require('apollo-server')
+const pubsub = new PubSub()
 
 const mongoose = require('mongoose')
 const Author = require('./models/Author')
@@ -16,6 +18,8 @@ mongoose.connect(MONGODB_URI)
   .catch((error) => {
     console.log('error connection to MongoDB:', error.message)
   })
+
+// mongoose.set('debug', true)
 
 // JWT
 const JWT_SECRET = "UNDEFINED"
@@ -79,6 +83,10 @@ const typeDefs = gql`
       password: String!
     ): Token
   }
+
+  type Subscription {
+    bookAdded: Book!
+  }
 `
 
 // Resolvers uses data to retrieve the correct value for the query
@@ -101,7 +109,15 @@ const resolvers = {
       }
     },
     allAuthors: async (root, args) => {
-      return await Author.find({})
+      const response = await Author.find({}).populate({ 
+        path: 'books',
+        populate: { path: 'author' }
+    
+      })
+      console.log(response)
+
+      // TRY TO DELETE ALL DATABASE AND ADD NEW DATA
+      return response
     },
     me: (root, args, context) => {
       return context.currentUser
@@ -111,6 +127,7 @@ const resolvers = {
     addBook: async (root, args, context) => {
       const currentUser = context.currentUser
 
+      // User Authentication checks
       if (!currentUser) {
         throw new AuthenticationError("not authenticated")
       }
@@ -127,6 +144,7 @@ const resolvers = {
         const newAuthor = new Author({...author})
         try {
           const response = await newAuthor.save() 
+          console.log(response)
           author = {
             name: args.author,
             born: null,
@@ -137,12 +155,20 @@ const resolvers = {
             invalidArgs: args,
           })
         }
-
       }
 
       // Add book to database
       const newBook = new Book({...args, author: author.id})
-      newBook.save()
+      const addedBook = await newBook.save()
+
+      // Add book to Author
+      const response = await Author.find({ name: args.author })
+      const booksList = await response[0].books.concat([addedBook._id])
+      await Author.findOneAndUpdate({ name: author.name }, { books: booksList }, { new: true })
+
+      
+      console.log('Book Added: ', { ...args, author})
+      pubsub.publish('BOOK_ADDED', { bookAdded: { ...args, author } }) // sends data to subscriber and update cache
       return {...args, author}
     },
     editAuthor: async (root, args) => {
@@ -190,23 +216,29 @@ const resolvers = {
       return { value: jwt.sign(userForToken, JWT_SECRET) }
     }
   },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator(['BOOK_ADDED']) // Resolving pubsubs, return an iterator object
+    }
+  },
   Book: {
     genres: (root) => [...root.genres]
   },
   Author: {
     books: root => {
-      // try {
-      //   const response = async () => await Book.find({}).populate('author')
-      //   return response.filter(book => book.author.name === root.name)
-      // } catch({message}) {
-      //   console.log(message)
-      // }
-      return ["Stuck"]
+      console.log('ROOT', root.books)
+      return root.books.map(book => {
+        return {
+          title: book.title,
+          published: book.published,
+          author: book.author,
+          genres: book.genres,
+          id: book._id
+        }
+      })
     },
     bookCount: async root => {
-      // const response = Book.find({}).populate('author')
-      // return response.filter(book => book.author.name === root.name).length
-      return 2
+      return root.books.length
     }
   }
 }
@@ -215,6 +247,9 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  cors: {
+    origin: true
+  },
   context: async ({ req }) => {
     // Context is shared across all resolvers
     // For example this code will provide user authentication
@@ -231,6 +266,7 @@ const server = new ApolloServer({
 })
 
 // Initiate a listener to listen out for any queries
-server.listen().then(({ url }) => {
+server.listen().then(({ url, subscriptionsUrl }) => {
   console.log(`Server ready at ${url}`)
+  console.log(`Subscriptions ready at ${subscriptionsUrl}`)
 })

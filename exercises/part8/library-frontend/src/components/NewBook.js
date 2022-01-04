@@ -14,28 +14,6 @@ mutation AddBook($title: String!, $author: String!, $published: Int!, $genres: [
 }
 `
 
-const ALL_BOOKS = gql`
-  query {
-    allBooks {
-      title
-      published
-      author {
-        name
-      }
-    }
-  }
-`
-
-const ALL_AUTHORS = gql`
-query {
-  allAuthors {
-    name
-    born
-    bookCount
-  }
-}
-`
-
 const NewBook = (props) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
@@ -47,10 +25,6 @@ const NewBook = (props) => {
     onError: (error) => {
       console.log(error)
     },
-    refetchQueries: [ 
-      {query: ALL_BOOKS},
-      {query: ALL_AUTHORS}
-    ],
     context: {
       headers: { authorization: `bearer ${props.token}` }
     }

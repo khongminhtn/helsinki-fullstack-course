@@ -646,3 +646,263 @@ const PersonForm = ({ setError }) => {
   // ..
 }
 ```
+ 
+ 
+# Fragments and subscription
+### Fragments 
+- It is common in GraphQL that multiple queries return similar results
+  - Such as querying Person or allPersons will return the same fields
+- Queries results can be simplified using [fragments](https://graphql.org/learn/queries/#fragments)
+  - **Fragments are not defined in schema, but in client**
+  - **Fragments must be declared when the client uses them for queries**
+
+```
+// RETURNS THE SAME FIELD/RESULTS
+query {
+  findPerson(name: "Pekka Mikkola") {
+    name
+    phone
+    address{
+      street 
+      city
+    }
+  }
+}
+
+query {
+  allPersons {
+    name
+    phone
+    address{
+      street 
+      city
+    }
+  }
+}
+
+/// USING FRAGMENTS
+fragment PersonDetails on Person {
+  name
+  phone 
+  address {
+    street 
+    city
+  }
+}
+
+query {
+  allPersons {
+    ...PersonDetails  
+  }
+}
+
+query {
+  findPerson(name: "Pekka Mikkola") {
+    ...PersonDetails  
+  }
+}
+
+// DECLARING FRAGMENTS IN CLIENT SIDE
+const PERSON_DETAILS = gql`
+  fragment PersonDetails on Person {
+    id
+    name
+    phone 
+    address {
+      street 
+      city
+    }
+  }
+`
+
+const ALL_PERSONS = gql`
+  {
+    allPersons  {
+      ...PersonDetails
+    }
+  }
+  ${PERSON_DETAILS}  
+`
+```
+ 
+### Subscription
+- Along with **query**, **mutation**, GraphQL offers **subscription**
+- Client can subscribe to updates about changes in the server
+  1. Application makes a subscription to a server
+  2. It starts to listen tot he server
+  3. Changes occur on the server will send notification to the subscribed application
+- Apollo uses WebSocket for server subscriber
+- Resolvers for subscriptiosn are different, the resolve field are objects that define a subscribe function
+ 
+### Subscription on the server
+- This setup only works with apollo-server 2
+- **npm install graphql-subscriptions**
+- Schema requires changes, aswell as resolvers
+- the communication between server and client happens using publis-subscribe principle
+- Utilizes **PubSub** interface
+- Adding a new person publishes a notification to subcribers
+- personAdded resolver registers all subscribers by returning them a suitable object
+```
+const { PubSub } = require('graphql-subscriptions')
+const pubsub = new PubSub()
+
+// SCHEMA
+type Subscription {
+  personAdded: Person!
+}    
+
+// RESOLVER
+{
+  Mutation: {
+    //...
+
+    pubsub.publish('PERSON_ADDED', { personAdded: person })
+
+    return person
+  },
+  Subscription: {
+    personAdded: {
+      subscribe: () => pubsub.asyncIterator(['PERSON_ADDED'])
+    }
+  }
+}
+
+
+server.listen().then(({ url, subscriptionsUrl }) => {  
+  console.log(`Server ready at ${url}`)
+  console.log(`Subscriptions ready at ${subscriptionsUrl}`)
+})
+```
+ 
+### Subscription on the client
+- To use subscription in React, changes to [configuration](https://www.apollographql.com/docs/react/data/subscriptions/) in index.js is required
+- This is because the app must have HTTP connection as well as WebSocket to GraphQL server
+- **npm install apollo/client subscriptions-transport-ws**
+- To subscribe we use useSubscription() in App.js
+- Once subscribed, whenever the data is changed in server side, details of the changes is printed to console
+- In the following example,
+  - A WebSocket is connected to GraphQL server URL in index.js
+  - Then we use useSubscription to subscribe to a query/mutation
+  - When that query is executed in the server, the result is printed in console
+  - One of the application for this is to directly update the Cache whenever changes happens in the backend
+ 
+```
+// index.js
+
+import { ApolloClient, ApolloProvider, HttpLink, InMemoryCache, split} from '@apollo/client' // Split Addition
+import { setContext } from 'apollo-link-context'
+
+import { getMainDefinition } from '@apollo/client/utilities'  // Addition Configuration
+import { WebSocketLink } from '@apollo/client/link/ws'        // Addition Configuration
+
+const authLink = setContext((_, { headers }) => {
+  const token = localStorage.getItem('phonenumbers-user-token')
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `bearer ${token}` : null,
+    }
+  }
+})
+
+const httpLink = new HttpLink({
+  uri: 'http://localhost:4000',
+})
+
+// Establishes WebSocket connection to GraphQL
+const wsLink = new WebSocketLink({  
+  uri: `ws://localhost:4000/graphql`,  
+  options: {    
+    reconnect: true  
+  }
+})
+
+// Addition Configuration
+const splitLink = split(  
+  ({ query }) => {    
+    const definition = getMainDefinition(query)    
+    return (      
+      definition.kind === 'OperationDefinition' &&      
+      definition.operation === 'subscription'    
+    );  
+  },  
+  wsLink,  
+  authLink.concat(httpLink),
+)
+
+const client = new ApolloClient({
+  cache: new InMemoryCache(),
+  link: splitLink       // Addition Configuration
+})
+
+ReactDOM.render(
+  <ApolloProvider client={client}>
+    <App />
+  </ApolloProvider>, 
+  document.getElementById('root')
+)
+```
+```
+// App.js
+
+export const PERSON_ADDED = gql`  
+  subscription {    
+    personAdded {      
+      ...PersonDetails    
+    }  
+  }  
+${PERSON_DETAILS}
+`
+
+import { useQuery, useMutation, useSubscription, useApolloClient } from '@apollo/client'
+
+const App = () => {
+  // ...
+
+  const updateCacheWith = (addedPerson) => {
+    const includedIn = (set, object) => 
+      set.map(p => p.id).includes(object.id)  
+
+    const dataInStore = client.readQuery({ query: ALL_PERSONS })
+    if (!includedIn(dataInStore.allPersons, addedPerson)) {
+      client.writeQuery({
+        query: ALL_PERSONS,
+        data: { allPersons: dataInStore.allPersons.concat(addedPerson) }
+      })
+    }   
+  }
+
+  useSubscription(PERSON_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const addedPerson = subscriptionData.data.personAdded
+      notify(`${addedPerson.name} added`)
+      updateCacheWith(addedPerson)
+    }
+  })
+
+  // ...
+}
+```
+ 
+### n+1 problem
+- N+1 problems are when 1 action creates another myriad number of actions
+- In the case of GraphQL, often it requires using join query rather than multiple separated queries
+- [4th parameter](https://www.apollographql.com/docs/apollo-server/data/resolvers/#resolver-arguments) of resolver function can be used to inspect the query. We can do join query in cases of a predicted threat of n+1 problems. Should not jump to this level of optimization if unless it is worth it
+- Facebook's [DataLoader](https://github.com/facebook/dataloader) offers good solution
+- debugging option needs to be enabled in mongoose
+```
+mongoose.connect(MONGODB_URI)
+  .then(() => {
+    console.log('connected to MongoDB')
+  })
+  .catch((error) => {
+    console.log('error connection to MongoDB:', error.message)
+  })
+
+mongoose.set('debug', true);
+```
+> Programmers waste enormous amounts of time thinking about, or worrying about, the speed of noncritical parts of their programs, and these attempts at efficiency actually have a strong negative impact when debugging and maintenance are considered. We should forget about small efficiencies, say about 97% of the time: premature optimization is the root of all evil - Donald Kruth
+ 
+### Epilogue
+- queries, schemas and mutation should be atleast moved outside of the code
+- better structuring of GraphQL for [server](https://blog.apollographql.com/modularizing-your-graphql-schema-code-d7f71d5ed5f2) and [client](https://medium.com/@peterpme/thoughts-on-structuring-your-apollo-queries-mutations-939ba4746cd8)

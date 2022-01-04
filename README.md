@@ -73,6 +73,8 @@ Build one large projects through multiple small exercises. There are 11 parts an
 48. ApolloClient (top library for GraphQL)
 49. GraphQL
 50. Apollo Client Devtools (allows inspection of cache)
+51. graphql-subscriptions (only works appolo-server version 2)
+52. apollo/client subscriptions-transport-ws (client side subscription)
 
 
 ### More Information  

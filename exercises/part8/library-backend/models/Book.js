@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 // Structure of database and validation
-const schema = new mongoose.Schema({
+const bookSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
@@ -20,5 +20,13 @@ const schema = new mongoose.Schema({
   ]
 })
 
+bookSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+  }
+})
+
 // Create a model object to allow data manipulation and queries
-module.exports = mongoose.model('Book', schema)
+module.exports = mongoose.model('Book', bookSchema)

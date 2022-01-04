@@ -1,33 +1,28 @@
 import React, { useState } from 'react'
-import { gql, useQuery } from '@apollo/client'
+import { gql, useLazyQuery } from '@apollo/client'
 
 const ALL_BOOKS = gql`
 query Query($genre: String) {
   allBooks(genre: $genre) {
+    id
     title
     published
     author {
       name
-      born
     }
   }
 }
 `
 
 const Books = (props) => {
-
   const [genre, setGenre] = useState('')
-
-  const result = useQuery(ALL_BOOKS,
-    {
-      variables: { genre }
-    }
-  )
+  const [getResult, result] = useLazyQuery(ALL_BOOKS)
 
   const handleGenres = ({ target }) => {
     setGenre(target.value)
-    result.refetch()
-    console.log('testing')
+    getResult({
+      variables: { genre }
+    })
   }
 
   if (!props.show) {
@@ -38,7 +33,7 @@ const Books = (props) => {
     return <div>loading...</div>
   }
 
-  const books = result.data.allBooks
+  const books = result.data ? result.data.allBooks : props.books
 
   return (
     <div>
