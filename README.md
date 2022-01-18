@@ -75,6 +75,12 @@ Build one large projects through multiple small exercises. There are 11 parts an
 50. Apollo Client Devtools (allows inspection of cache)
 51. graphql-subscriptions (only works appolo-server version 2)
 52. apollo/client subscriptions-transport-ws (client side subscription)
+53. typescript
+54. @types/ts-node
+55. @types/express
+56. ts-node-dev
+57. @typescript-eslint/eslint-plugin 
+58. @typescript-eslint/parser
 
 
 ### More Information  

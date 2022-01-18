@@ -19,26 +19,26 @@ interface result {
   ratingDes: string;
   target: number;
   average: number;
-};
+}
 
 const exerciseCalculator = (trainedDays: Array<number>, target: number): result => {
-  const periodLength: number = trainedDays.length
-  const trainingDays: number = trainedDays.map(day => day > 0).length
-  const success: boolean = trainedDays.reduce((a, b) => a + b, 0) >= target * trainedDays.length
+  const periodLength: number = trainedDays.length;
+  const trainingDays: number = trainedDays.map(day => day > 0).length;
+  const success: boolean = trainedDays.reduce((a, b) => a + b, 0) >= target * trainedDays.length;
 
-  let rating: number = 3
-  trainedDays.forEach(day => day < target ? rating -= 1: null)
+  let rating = 3;
+  trainedDays.forEach(day => day < target ? rating -= 1: null);
 
-  let ratingDes: string
+  let ratingDes: string;
   if (rating === 3) {
-    ratingDes = 'Brilliant, you have met your target'
+    ratingDes = 'Brilliant, you have met your target';
   } else if (rating === 2) {
-    ratingDes = 'You did ok this time'
+    ratingDes = 'You did ok this time';
   } else {
-    ratingDes = 'You have not met your target'
+    ratingDes = 'You have not met your target';
   }
 
-  const average: number = trainedDays.reduce((a, b) => a + b, 0) / trainedDays.length
+  const average: number = trainedDays.reduce((a, b) => a + b, 0) / trainedDays.length;
   
   return {
     periodLength,
@@ -48,7 +48,11 @@ const exerciseCalculator = (trainedDays: Array<number>, target: number): result 
     ratingDes,
     average,
     target
-  }
+  };
 };
 
-console.log(exerciseCalculator([3, 0, 2, 4.5, 0, 3, 1], 2))
+// const input: Array<string> = filter(arg => Number(arg) >= 0);
+// input.pop();
+// const days: Array<number> = input.map(day => Number(day));
+// const target = Number(process.argv[process.argv.length - 1]);
+export { exerciseCalculator };

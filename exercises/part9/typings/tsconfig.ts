@@ -1,5 +1,0 @@
-{
-  "compilerOptions": {
-    "noImplicityAny": true,
-  }
-}
