@@ -13,6 +13,10 @@ export enum Gender {
   Other = 'other'
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface Entry {
+}
+
 export interface Patients {
   id: string;
   name: string;
@@ -20,6 +24,7 @@ export interface Patients {
   ssn: string;
   gender: Gender;
   occupation: string;
+  entries: Entry[]
 }
 
 export type ParserField = { 
@@ -30,12 +35,10 @@ export type ParserField = {
   occupation: unknown 
 };
 
-
-
 // Utility Types: Takes in Patients, excludeds 'ssn' field 
 // and make new type 'NonSsnPatients' 
 // Omitted field will be of type any and it becomes optional
-export type NonSsnPatients = Omit<Patients, 'ssn'>;
+export type PublicPatient = Omit<Patients, 'ssn' | 'entries'>;
 
 // Patients without ID
 export type NewPatient = Omit<Patients, 'id'>;

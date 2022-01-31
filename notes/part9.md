@@ -628,7 +628,7 @@ const toNewDiaryEntry = ({ comment, date, weather, visibility } : Fields): NewDi
 ### React components with TypeScript
 - React components are mere functions
 - We will no longer need prop-types package
-- We use interface for the parameters and JSX.Element as return type
+- We use type interface, extensions and unions for the parameters and JSX.Element as return type
  
 Examples
 ```
@@ -661,3 +661,194 @@ const MyComp4 = ({label, price}: {label: string, price: number}) => {
   return <div>There is nothing like TypeScript.</div>
 }
 ```
+ 
+### Deeper Type usage
+In the case of a list of data with inconsistent fields, we can create multiple interfaces with the different fields and extend the fields that are common to eachother and then combine these interfaces into 1 single type
+- When we have manually declared a type union or TS had infered that it is of type Union, we can use switch case to deal with this kinda of type.
+- When there is a field that has not been typed, we need to create a method to deal with such errors to return an error
+ 
+**Data**
+```
+const courseParts = [
+  {
+    name: "Fundamentals",
+    exerciseCount: 10,
+    description: "This is an awesome course part"
+  },
+  {
+    name: "Using props to pass data",
+    exerciseCount: 7,
+    groupProjectCount: 3
+  },
+  {
+    name: "Deeper type usage",
+    exerciseCount: 14,
+    description: "Confusing description",
+    exerciseSubmissionLink: "https://fake-exercise-submit.made-up-url.dev"
+  }
+];
+```
+ 
+**Multiple Interfaces for field differences**
+**Extend the common fields to the base type**
+**This is extended type union**
+```
+interface CoursePartBase {
+  name: string;
+  exerciseCount: number;
+}
+
+interface CoursePartOne extends CoursePartBase {
+  name: "Fundamentals";
+  description: string;
+}
+
+interface CoursePartTwo extends CoursePartBase {
+  name: "Using props to pass data";
+  groupProjectCount: number;
+}
+
+interface CoursePartThree extends CoursePartBase {
+  name: "Deeper type usage";
+  description: string;
+  exerciseSubmissionLink: string;
+}
+
+type CoursePart = CoursePartOne | CoursePartTwo | CoursePartThree;
+```
+ 
+**Dealing with type union and errors**
+```
+
+// Helper function for exhaustive type checking
+const assertNever = (value: never): never => {
+  throw new Error(
+    `Unhandled discriminated union member: ${JSON.stringify(value)}`
+  );
+};
+
+// Dealing with unions
+courseParts.forEach(part => {
+  switch (part.name) {
+    case "Fundamentals:
+      // TS knows we can use name, exerciseCount and description
+    case "Using props to pass data":
+      // TS knows we can use name, exerciseCount and groupProjectcount
+    case "Deeper type usage":
+      // TS knows we can use name, description and exerciseSubmissionLink
+    defaul:
+      return assertNever(parts);
+  }
+});
+```
+ 
+### A note about defining object types
+- We can use **interface** and **type** to define our types
+- However when 2 interfaces has the name, it merges. Whereas type will give error
+- TS doc recommends using interfaces
+```
+interface DiaryEntry {
+  id: number;
+  date: string;
+  weather: Weather;
+  visibility: Visibility;
+  comment?: string;
+} 
+
+type DiaryEntry = {
+  id: number;
+  date: string;
+  weather: Weather;
+  visibility: Visibility;
+  comment?: string;
+} 
+```
+ 
+### Working with an existing codebase
+- Reading code is a skill, the more you read, the better you are
+- Its ok to not understand 100% of existing code base
+- If app is properly structured, you can trust to make careful modifications and the app will still work
+- Over time you will understand the unfamiliar parts, but does not happen over night
+- When working with existing code base. Look into:
+  1. README.md
+  2. package.json
+  3. folder structure
+    - Insight into functionaltiy and architecture used
+  4. Unit, Integration or E2E tests
+    - Important for modifying and adding new features
+
+### Patientor frontend
+- Small application, useContext and useReducer will make state management global, allow components accorss the app to access
+- Very similar to redux
+```
+// "Patient | undefined" ensures that app throws error if key being accessed does not exists
+export type State = {
+  patients: { [id: string]: Patient | undefined}; 
+};
+
+// Alternatively, Using Map to declare a type for both key and value
+interface State {
+  // equivalent to patient: { [id: string]: Patient }
+  patients: Map<string, Patient>; 
+}
+
+// Map Accessor get() always returns union of declared value
+// type for myPatient is now Patient | undefined
+const myPatient = state.patients.get('non-existing-id'); 
+```
+
+- Main ingredient is useReducer
+  - Creates state and dispatch function
+  - Passes them to context provider for global component access
+```
+Give access to dispatcher and states to all its children (components)
+
+// state.ts
+export const StateProvider = ({reducer,children}: StateProviderProps) => {
+  const [state, dispatch] = useReducer(reducer, initialState);  
+  return (
+    <StateContext.Provider value={[state, dispatch]}>      
+      {children}
+    </StateContext.Provider>
+  );
+};
+
+// index.ts
+import { reducer, StateProvider } from "./state";
+
+ReactDOM.render(
+  <StateProvider reducer={reducer}>
+    <App />
+  </StateProvider>, 
+  document.getElementById('root')
+);
+```
+ 
+- Components use the following custom hook to access state and dispatcher
+```
+// state.ts
+export const useStateValue = () => useContext(StateContext);
+
+// component.tsx
+import { useStateValue } from "../state";
+
+const PatientListPage = () => {
+  const [{ patients }, dispatch] = useStateValue();
+}
+```
+ 
+### Patient listing page
+- Passing parameter to axios will not validate any data
+- It is quiet dangerous if you are using external APIs
+- You can instead, create a custom validation functions or use type guard
+- This is due to the fact that data's structure can change over time
+ 
+```
+// Given type to the states
+// In this case modalOpen is of type boolean
+// error is of type string or undefined
+const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+const [error, setError] = React.useState<string | undefined>();
+```
+ 
+### Full entries

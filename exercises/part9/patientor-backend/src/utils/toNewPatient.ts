@@ -74,7 +74,8 @@ const toNewPatient = (entry: any): NewPatient => {
     dateOfBirth: parseDOB(entry.dateOfBirth),
     ssn: parseSsn(entry.ssn),
     gender: parseGender(entry.gender),
-    occupation: parseOccupation(entry.occupation)
+    occupation: parseOccupation(entry.occupation),
+    entries: []
   };
 
   return newEntry;
