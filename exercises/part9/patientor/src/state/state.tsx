@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer } from "react";
-import { Patient } from "../types";
+import { Patient, Diagnosis } from "../types";
 
 import { Action } from "./reducer";
 
@@ -7,12 +7,14 @@ import { Action } from "./reducer";
 export type State = {
   patients: { [id: string]: Patient };
   patientVisited: Patient[];
+  diagnosis: Diagnosis[]
 };
 
 // State when starting up
 const initialState: State = {
   patients: {},
-  patientVisited: []
+  patientVisited: [],
+  diagnosis: []
 };
 
 // Create the first state and its dispatch

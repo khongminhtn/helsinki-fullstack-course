@@ -852,3 +852,10 @@ const [error, setError] = React.useState<string | undefined>();
 ```
  
 ### Full entries
+- Data with inconsistent fields
+  - Have both common and specific fields
+  - Common fields are determining field for Type's name/identifier.
+- Create a base types
+  - carry all the common fields of the data
+- Extend the different fields in each type
+  - Contain uncommon fields with an identifier

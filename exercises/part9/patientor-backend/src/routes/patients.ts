@@ -15,7 +15,7 @@ const router = express.Router();
 
 // Adding a GET HTTP operation to Router Object
 router.get('/', (_req, res) => {
-  res.send(patientsService.getPatients());
+  res.send(JSON.stringify(patientsService.getPatients()));
 });
 
 // Add POST to add patients

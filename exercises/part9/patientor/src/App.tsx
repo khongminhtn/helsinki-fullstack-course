@@ -5,12 +5,12 @@ import { Button, Divider, Header, Container } from "semantic-ui-react";
 
 import { apiBaseUrl } from "./constants";
 import { useStateValue } from "./state";
-import { Patient } from "./types";
+import { Diagnosis, Patient } from "./types";
 
 import PatientListPage from "./PatientListPage";
 import PatientInfo from "./PatientInfo";
 
-import { setPatientList } from "./state/reducer";
+import { setPatientList, setDiagnosisList } from "./state/reducer";
 
 const App = () => {
   const [, dispatch] = useStateValue();
@@ -18,17 +18,31 @@ const App = () => {
   React.useEffect(() => {
     void axios.get<void>(`${apiBaseUrl}/ping`);
 
+    const fetchDiagnoses = async () => {
+      try {
+        const { data: diagnosisListFromApi } = await axios.get<Diagnosis[]>(
+          `${apiBaseUrl}/diagnoses`
+        );
+        console.log('UseEffect|fetchDiagnoses|diagnosisListFromApi', diagnosisListFromApi);
+        dispatch(setDiagnosisList(diagnosisListFromApi));
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
     const fetchPatientList = async () => {
       try {
         const { data: patientListFromApi } = await axios.get<Patient[]>(
           `${apiBaseUrl}/patients`
         );
-        console.log('React.UseEffect|fetchPatientList', patientListFromApi);
+        console.log('UseEffect|fetchPatientList|patientListFromApi', patientListFromApi);
         dispatch(setPatientList(patientListFromApi));
       } catch (e) {
         console.error(e);
       }
     };
+    
+    void fetchDiagnoses();
     void fetchPatientList();
   }, [dispatch]);
 

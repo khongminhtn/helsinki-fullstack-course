@@ -14,7 +14,7 @@ const toNewPatient_1 = __importDefault(require("../utils/toNewPatient"));
 const router = express_1.default.Router();
 // Adding a GET HTTP operation to Router Object
 router.get('/', (_req, res) => {
-    res.send(patients_1.default.getPatients());
+    res.send(JSON.stringify(patients_1.default.getPatients()));
 });
 // Add POST to add patients
 router.post('/', (req, res) => {
@@ -34,7 +34,9 @@ router.post('/', (req, res) => {
 });
 // Returns all info of a patient
 router.get('/:id', (req, res) => {
-    res.send(patients_1.default.getOnePatient(req.params.id));
+    const patient = patients_1.default.getOnePatient(req.params.id);
+    console.log(JSON.stringify(patient));
+    res.send(JSON.parse(JSON.stringify(patient)));
 });
 // Export Router object to use in index.ts
 exports.default = router;

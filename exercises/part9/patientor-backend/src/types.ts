@@ -5,16 +5,60 @@ export interface Diagnoses {
   latin?: string  // May or may not be available, use optional property '?'
 }
 
+// Entries types
+interface EntryBase {
+  id: string;
+  description: string;
+  date: string;
+  specialist: string;
+  diagnosisCodes?: Array<Diagnoses['code']>;
+}
+
+// Hospital Entries
+interface HostpitalDischarge {
+  date: string;
+  criteria: string;
+}
+
+interface HospitalEntry extends EntryBase {
+  type: 'Hospital';
+  discharge: HostpitalDischarge;
+}
+
+// OccupationalHealthCareEntry
+interface HealthCareSickLeave {
+  startDate: string;
+  endDate: string;
+}
+interface OccupationalHealthcareEntry extends EntryBase {
+  type: 'OccupationalHealthcare';
+  employerName: string;
+  sickLeave?: HealthCareSickLeave;
+}
+
+// HealthCheck
+export enum HealthCheckRating {
+  "Healthy" = 0,
+  "LowRisk" = 1,
+  "HighRisk" = 2,
+  "CriticalRisk" = 3
+}
+interface HealthCheckEntry extends EntryBase{
+  type: "HealthCheck"
+  healthCheckRating: HealthCheckRating
+}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export type Entry = 
+  | HospitalEntry
+  | OccupationalHealthcareEntry
+  | HealthCheckEntry
 
 // Patient Types
 export enum Gender { 
   Male = 'male',
   Female = 'female',
   Other = 'other'
-}
-
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface Entry {
 }
 
 export interface Patients {
