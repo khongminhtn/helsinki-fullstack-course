@@ -81,6 +81,11 @@ Build one large projects through multiple small exercises. There are 11 parts an
 56. ts-node-dev
 57. @typescript-eslint/eslint-plugin 
 58. @typescript-eslint/parser
+59. Formik 
+    - Helps get values in and out of form state
+    - Validation and error messages
+    - Handling form submission
+    - Helps testing, refactoring and reasoning forms easier
 
 
 ### More Information  

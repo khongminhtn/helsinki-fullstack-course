@@ -859,3 +859,14 @@ const [error, setError] = React.useState<string | undefined>();
   - carry all the common fields of the data
 - Extend the different fields in each type
   - Contain uncommon fields with an identifier
+
+### Add Patient Form
+- Formik:
+  - Getting values in and out of form state
+  - Validation and error messages
+  - Handling form and submission
+- Formik help make dealing with forms easier
+  - Testing
+  - Refractoring
+  - Reasoning
+
