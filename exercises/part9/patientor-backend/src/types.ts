@@ -30,6 +30,7 @@ interface HealthCareSickLeave {
   startDate: string;
   endDate: string;
 }
+
 interface OccupationalHealthcareEntry extends EntryBase {
   type: 'OccupationalHealthcare';
   employerName: string;
@@ -52,7 +53,7 @@ interface HealthCheckEntry extends EntryBase{
 export type Entry = 
   | HospitalEntry
   | OccupationalHealthcareEntry
-  | HealthCheckEntry
+  | HealthCheckEntry;
 
 // Patient Types
 export enum Gender { 
@@ -86,3 +87,8 @@ export type PublicPatient = Omit<Patients, 'ssn' | 'entries'>;
 
 // Patients without ID
 export type NewPatient = Omit<Patients, 'id'>;
+
+// New Entry
+export type NewEntry =   | Omit<HospitalEntry, 'id'>
+| Omit<OccupationalHealthcareEntry, 'id'>
+| Omit<HealthCheckEntry, 'id>'>;

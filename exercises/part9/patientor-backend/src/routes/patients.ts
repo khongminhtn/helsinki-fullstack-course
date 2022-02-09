@@ -5,7 +5,7 @@ import express from 'express';
 // Import TS Types resolved business logic
 import patientsService from '../services/patients';
 
-import { NewPatient } from '../types';
+import { Entry, NewPatient } from '../types';
 
 // Import Utils, resolve external data
 import toNewPatient from '../utils/toNewPatient';
@@ -21,9 +21,10 @@ router.get('/', (_req, res) => {
 // Add POST to add patients
 router.post('/', (req, res) => {
   try {
+    // Cleaning external data
     const newPatientEntry: NewPatient = toNewPatient(req.body);
+    // adding data to database
     const addedEntry = patientsService.addPatients(newPatientEntry);
-    console.log(addedEntry);
     res.json(addedEntry);
   } catch(error: unknown) {
     let errorMessage = 'Something went wrong.';
@@ -33,6 +34,23 @@ router.post('/', (req, res) => {
     res.status(400).send(errorMessage);
   }
 
+});
+
+// Add an entry to a specific patient identified using their id
+router.post('/:id/entries', (req, res) => {
+  const id = req.params.id;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const newEntry: Entry = req.body;
+  try {
+    const addedEntry = patientsService.addEntryToPatient(id, newEntry);
+    res.json(addedEntry);
+  } catch(error: unknown) {
+    let errorMessage = 'Something went wrong';
+    if (error instanceof Error) {
+      errorMessage += ' Error ' + error.message;
+    }
+    res.status(400).send(errorMessage);
+  }
 });
 
 // Returns all info of a patient

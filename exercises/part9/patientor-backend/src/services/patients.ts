@@ -6,12 +6,12 @@ import patientsData from '../data/patients';
 import {v1 as uuid} from 'uuid';
 
 // Import types
-import { NewPatient, PublicPatient, Patients } from '../types';
+import { NewPatient, PublicPatient, Patients, Entry, NewEntry } from '../types';
 
 // Typer Assertion, incase of unwated inferences
 // Forcing type NonSsnPatients to patientData to replace infer
 const publicPatient: PublicPatient[] = patientsData as PublicPatient[];
-const patients: Patients[] = patientsData as Patients[];
+let patients: Patients[] = patientsData ;
  
 // Business logic
 const getPatients = (): PublicPatient[] => {
@@ -40,10 +40,33 @@ const getOnePatient = (id: string): Patients | undefined => {
   return patient;
 };
 
+const addEntryToPatient = (patientId: string, entry: NewEntry): Entry => {
+  // Entry Value must have id omited
+  const id = uuid();
+  const newEntry = {
+    id,
+    ...entry
+  };
+
+  patients = patients.map(patient => {
+    if (patient.id === patientId) {
+      patient.entries.push(newEntry);
+      return patient;
+    } else {
+      return patient;
+    }
+  });
+
+  console.log('addEntryToPatient|newEntry: ', newEntry);
+  console.log('addEntryToPatient|patients: ', patients);
+  return newEntry;
+};
+
 // Exporting business logics for routing
 export default {
   getPatients,
   addPatients,
-  getOnePatient
+  getOnePatient,
+  addEntryToPatient
 };
 

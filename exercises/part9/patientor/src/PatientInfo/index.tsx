@@ -2,12 +2,14 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
-import { Entry, Patient } from '../types';
+import { Entry, Patient, NewEntry } from '../types';
 import { useStateValue } from '../state';
 
 import { apiBaseUrl } from '../constants';
 
-import { addVisited } from '../state/reducer';
+import { addVisited, addPatientEntry } from '../state/reducer';
+
+import AddEntryForm from '../AddEntryForm/AddEntryForm';
 
 // Exhaustive function that catches any unexpected types
 const assertNever = (value: never): never => {
@@ -66,6 +68,8 @@ const EntryDetails: React.FC<{ entry: Entry }> = ({ entry }) => {
   }
 };
 
+// Add Entry Values Type
+
 const PatientInfo = (): JSX.Element => {
   // Get state and dispatcher
   const [{patientVisited},dispatch] = useStateValue();
@@ -90,6 +94,17 @@ const PatientInfo = (): JSX.Element => {
     }
   };
 
+  const addEntry = async (values: NewEntry) => {
+    try {
+      const response = await axios.post<Entry>(`${apiBaseUrl}/patients/${id}/entries`, values);
+      console.log('addEntry|response: ', response.data);
+      dispatch(addPatientEntry(response.data, id));
+      // dispatch to update state
+    } catch(e) {
+      console.log(e);
+    }
+  };
+
   // Catching undefined results and return appropriate info
   if (!patientInState) {
     void fetchPatient();
@@ -109,7 +124,10 @@ const PatientInfo = (): JSX.Element => {
             patientInState.entries.map(entry => <EntryDetails key={entry.id} entry={entry}/>)
           }
         </div>
-
+        <div>
+          <h3>Adding Entry</h3>
+          <AddEntryForm onSubmit={addEntry} onCancel={() => null}/>
+        </div>
       </>
     );
   }

@@ -869,4 +869,33 @@ const [error, setError] = React.useState<string | undefined>();
   - Testing
   - Refractoring
   - Reasoning
+- Formik are components which wraps the following
+  - label
+  - fields
+  - error messages
+ 
+Example
+```
+interface TextProps extends FieldProps {
+  label: string;
+  placeholder: string;
+}
 
+export const TextField = ({ field, label, placeholder }: TextProps) => (
+  <Form.Field>
+    <label>{label}</label>
+    <Field placeholder={placeholder} {...field} />
+    <div style={{ color:'red' }}>
+      <ErrorMessage name={field.name} />
+    </div>
+  </Form.Field>
+);
+```
+ 
+Accessing Error Messages
+```
+export const TextField = ({ field, label, placeholder, form }: TextProps) => {
+  console.log(form.errors); 
+  // ...
+}
+```

@@ -8,7 +8,7 @@ import diagnosesService from '../services/diagnoses';
 // Create a Router object
 const router = express.Router();
 
-// Adding a GET HTTP operation to Router Object
+// HTTP Operations
 router.get('/', (_req, res) => {
   res.send(diagnosesService.getDiagnoses());
 });
